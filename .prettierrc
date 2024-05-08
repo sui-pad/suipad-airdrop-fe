@@ -1,0 +1,12 @@
+{
+  "ternary": "never",
+  "printWidth": 100,
+  "arrowParens": "avoid",
+  "proseWrap": "preserve",
+  "plugins": [
+    "prettier-plugin-tailwindcss"
+  ],
+  "js": {
+    "logical": "always"
+  }
+}
