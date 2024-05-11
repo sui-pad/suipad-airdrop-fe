@@ -60,12 +60,12 @@ function ProjectTask({ jobId }: { jobId: string }) {
         progress={progress}
         isEnd={!info || now - info.startTime < 0 || now - info.endTime > 0}
       />
-      
+
       <Divider className="my-10" />
       <div className="grid gap-y-7">
         <div className="flex items-center gap-x-10">
           <p className="w-[300px]">Invite more people for a higher chance of winning the draw.</p>
-          <span className="underline">{userInfo?.inviteCode}</span>
+          <span className="underline">{userInfo?.inviteCode ?? "-"}</span>
 
           <Clipboard
             text={location.href + "?code=" + userInfo?.inviteCode}
@@ -82,7 +82,7 @@ function ProjectTask({ jobId }: { jobId: string }) {
           <p>Your current number of invited friends is</p>
 
           <span className="flex h-8 w-[50px] items-center justify-center rounded-full bg-[#F0F0F0]">
-            {userInfo?.inviteCount}
+            {userInfo?.inviteCount ?? 0}
           </span>
         </div>
       </div>
