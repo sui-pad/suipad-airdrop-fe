@@ -13,6 +13,7 @@ interface WalletType {
   setAddress: (address: string | null) => void
   setSelectConnector: (connector: any) => void
   walletConnectSuccess: () => void
+  walletConnecting: () => void
   walletDisconnect: () => void
 }
 
@@ -23,6 +24,7 @@ export const useWalletStore = create<WalletType>(set => ({
   setAddress: (address) => set({ address }),
   setSelectConnector: (connector) => set({ selectConnector: connector }),
   walletConnectSuccess: () => set({ connectionState: ConnectionState.CONNECTED }),
+  walletConnecting: () => set({ connectionState: ConnectionState.CONNECTING }),
   walletDisconnect: () => set({ connectionState: ConnectionState.NULL }),
 }));
 

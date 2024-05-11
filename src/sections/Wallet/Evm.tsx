@@ -1,5 +1,15 @@
+"use client";
+
+import { useSearchParams } from "next/navigation";
+
+import { useEffect } from "react";
+
 import { useWeb3React } from "@web3-react/core";
+
+import useSWRMutation from "swr/mutation";
+
 import {
+  ChainId,
   Connection,
   metamaskBase,
   okxBase,
@@ -7,19 +17,19 @@ import {
   gateBase,
   bitgetBase,
   tryActivation,
+  switchChain,
   disconnect,
   setRecentConnectionType,
-  eagerlyConnect,
 } from "@/connection/eth";
+import request from "@/utils/request";
 
-import { useWalletStore, useWalletDialogStore } from "./hooks";
+import { useWalletStore, useWalletDialogStore, ConnectionState } from "./hooks";
 
 import ImgMetamask from "./images/Metamask.png";
 import ImgOkx from "./images/Okx.png";
 import ImgTokenpocket from "./images/Tokenpocket.png";
 import ImgGate from "./images/Gate.png";
 import ImgBitget from "./images/Bitget.png";
-import { useEffect } from "react";
 
 export const ETH_WALLETS: Connection[] = [
   { ...metamaskBase, name: "MetaMask", icon: ImgMetamask },
@@ -33,44 +43,101 @@ export interface EvmConnection extends Connection {
   connect: () => void;
 }
 
+interface LoginParams {
+  addr: string;
+  sign: string;
+  code: string | null;
+}
+
 export default function Evm(props: { renderOption: (option: EvmConnection) => JSX.Element }) {
   const { renderOption } = props;
-  const { isActive, account, chainId } = useWeb3React();
+  const searchParams = useSearchParams();
+  const { isActive, account, provider, chainId } = useWeb3React();
   const {
+    connectionState,
     selectConnector,
     setSelectConnector,
     setAddress,
     walletConnectSuccess,
+    walletConnecting,
     walletDisconnect,
   } = useWalletStore();
   const { closeDialog } = useWalletDialogStore();
+
+  const { trigger: checkLogin } = useSWRMutation<boolean, any, string>(
+    "/user/check_login",
+    (url, { arg }) => request(url, { body: arg }),
+  );
+  const { trigger: login } = useSWRMutation<boolean, any, string, LoginParams>(
+    "/user/login",
+    (url, { arg }) => request(url, { body: arg }),
+  );
+
+  const code = searchParams.get("code")
 
   const handleConnect = async (walletConnection: Connection) => {
     if (selectConnector) return;
 
     setSelectConnector(walletConnection);
+    setRecentConnectionType(walletConnection.type);
 
     const isConnect = await tryActivation(walletConnection);
 
-    if (isConnect) {
-      setRecentConnectionType(walletConnection.type);
-      closeDialog();
-    } else {
+    if (!isConnect) {
       disconnect();
       setSelectConnector(null);
-      // showTips("Wallet is Not Installed");
     }
   };
 
+  const handleLogin = async () => {
+    if (!account || !provider) return;
+    try {
+      if (chainId !== ChainId.BNB) {
+        await switchChain(ChainId.BNB);
+      }
+
+      let isLogin = await checkLogin();
+
+      if (!isLogin) {
+        const nonce = ["Welcome to SuipadAirdrop:", account].join("\n");
+
+        const sign = await provider.getSigner().signMessage(nonce);
+
+        const res = await login({ addr: account, sign, code: code ?? "" });
+
+        isLogin = res;
+      }
+
+      if (isLogin) {
+        setAddress(account);
+        closeDialog();
+        walletConnectSuccess();
+      }
+    } catch (error) {
+      disconnect();
+    }
+  };
+
+  const handleDisconnect = () => {
+    setAddress(null);
+    setSelectConnector(null);
+  };
+
   useEffect(() => {
-    if (isActive && account) {
-      setAddress(account);
-      walletConnectSuccess();
+    if (connectionState === ConnectionState.CONNECTING) {
+      handleLogin();
+    } else if (connectionState === ConnectionState.NULL) {
+      handleDisconnect();
+    }
+  }, [connectionState]);
+
+  useEffect(() => {
+    if (isActive && account && provider) {
+      walletConnecting();
     } else {
-      setAddress(null);
       walletDisconnect();
     }
-  }, [isActive, account]);
+  }, [provider, isActive, account]);
 
   return ETH_WALLETS.map(item => renderOption({ ...item, connect: () => handleConnect(item) }));
 }

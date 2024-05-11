@@ -50,11 +50,11 @@ export default function Wallet() {
   }
 
   return (
-    <>
+    <div>
       <Button className="h-14 w-48 text-xl font-bold" onClick={openDialog}>
         Connect Wallet
       </Button>
-      <WalletDialog />
-    </>
+      <WalletDialog  />
+    </div>
   );
 }

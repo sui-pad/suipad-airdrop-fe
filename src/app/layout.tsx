@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Layout from "@/sections/layout";
 
 import "./globals.css";
 
@@ -15,8 +14,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className=" bg-[#f7f7f7]">
-        <Layout>{children}</Layout>
+      <body className="bg-[#f7f7f7]">
+        {children}
       </body>
     </html>
   );

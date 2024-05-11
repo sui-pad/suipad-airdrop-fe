@@ -1,9 +1,14 @@
+"use client";
+
+import Image from "next/image";
 import React, { useEffect, useState, useRef } from "react";
 
 import { cva } from "cva";
 import { twMerge } from "tailwind-merge";
 
 import show from "./show";
+
+import ImgSuccess from "@/app/assets/success.png";
 
 interface MessageType {
   open?: boolean;
@@ -13,18 +18,8 @@ interface MessageType {
   onClose?: () => void;
 }
 
-const messageStyle = cva({
-  base: "flex justify-center min-h-10 text-xl max-w-[340px] min-w-[200px] max-w-content px-3 py-2 scale-0 bg-white transition-transform",
-  variants: {
-    show: {
-      false: null,
-      true: "scale-100",
-    },
-  },
-});
-
 export function Message(props: MessageType) {
-  const { open, onClose, delay = 2000, tips } = props;
+  const { open, status, onClose, delay = 2000, tips } = props;
 
   const [show, setShow] = useState<boolean>(false);
   const timer = useRef<NodeJS.Timeout>();
@@ -50,9 +45,24 @@ export function Message(props: MessageType) {
     };
   }, [open, delay]);
 
+  let icon = null;
+
+  if (status === "succ")
+    icon = (
+      <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#4ec3c9]">
+        <Image className="w-4" src={ImgSuccess} alt="success" />
+      </div>
+    );
+
   return (
-    <div className="pt-safe pointer-events-none fixed top-24 z-50 flex w-full justify-center">
-      <div className={twMerge(messageStyle({ show }))}>
+    <div className="pointer-events-none fixed top-24 z-50 flex w-full justify-center">
+      <div
+        className={twMerge(
+          "max-w-content flex min-h-10 max-w-[340px] scale-0 items-center justify-center gap-x-2 rounded-lg bg-white px-5 py-2 shadow-[0_6px_12px_0_rgba(0,0,0,0.1)] transition-transform",
+          show && "scale-100",
+        )}
+      >
+        {icon}
         <span className="break-words">{tips}</span>
       </div>
     </div>

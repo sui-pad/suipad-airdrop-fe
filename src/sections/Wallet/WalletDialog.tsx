@@ -21,10 +21,10 @@ function Option(props: EvmConnection) {
 }
 
 export default function WalletDialog() {
-  const { isOpen } = useWalletDialogStore();
+  const { isOpen, closeDialog } = useWalletDialogStore();
 
   return (
-    <Dialog open={isOpen} title="Connect Wallet">
+    <Dialog title="Connect Wallet" open={isOpen} onClose={closeDialog}>
       <div className="w-[360px]">
         <div className="mx-auto grid gap-3">
           <Evm renderOption={Option} />

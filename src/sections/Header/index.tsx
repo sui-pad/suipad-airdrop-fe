@@ -30,6 +30,7 @@ const navs = [
   {
     icon: <Image className="w-7" src={ImgOdyssey} alt="Odyssey" />,
     text: "Odyssey",
+    href: "/"
   },
 ];
 
@@ -43,7 +44,7 @@ function Nav() {
           <div className="group relative flex gap-2 text-xl font-semibold" key={nav.text}>
             {nav.icon}
             {nav.href ? <Link href={nav.href}>{nav.text}</Link> : <span>{nav.text}</span>}
-            
+
             <div className="absolute left-14 top-10 hidden h-1 w-10 -translate-x-1/2 -translate-y-1/2 transform rounded-full bg-[#4ec3c9] group-hover:block"></div>
           </div>
         ))}

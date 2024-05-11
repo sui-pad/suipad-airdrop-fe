@@ -56,7 +56,8 @@ export async function disconnect() {
 
         await connector.deactivate?.();
         await connector.resetState();
-
+        setRecentConnectionType(undefined);
+        
         return true;
       } catch (error) {
         console.debug(`web3-react eager disconnect error: ${error}`);
