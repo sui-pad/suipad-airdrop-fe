@@ -21,12 +21,12 @@ export interface AirdropType {
 export interface TaskType {
   taskId: number;
   taskType:
-    | "check"
-    | "connect_twitter"
-    | "follow_twitter"
-    | "share_twitter"
-    | "join_tg_group"
-    | "like_comment_twitter";
+  | "check"
+  | "connect_twitter"
+  | "follow_twitter"
+  | "share_twitter"
+  | "join_tg_group"
+  | "like_comment_twitter";
   step: number;
   content: string;
   action: string;
@@ -125,7 +125,7 @@ export function useTaskConnectTelegram(jobId: string, step: number) {
     const res = await request<{ url: string }>(url);
 
     if (res) {
-      return progressLoop(res.url, mutate, res => res[step] === 2);
+      return progressLoop(res.url, mutate, res => res[step - 1] === 2);
     }
 
     return false;
@@ -135,7 +135,7 @@ export function useTaskConnectTelegram(jobId: string, step: number) {
 export function useTaskJoinTelegram(jobId: string, step: number, action: string) {
   const { mutate } = useTaskProgress(jobId);
 
-  return () => progressLoop(action, mutate, res => res[step] === 1);
+  return () => progressLoop(action, mutate, res => res[step - 1] === 1);
 }
 
 export function useTaskCheckWallet(jobId: string, taskId: number) {
