@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Suspense } from "react";
 import { Dialog } from "@/components/Popover";
 
 import Evm, { EvmConnection } from "./Evm";
@@ -25,11 +26,13 @@ export default function WalletDialog() {
 
   return (
     <Dialog title="Connect Wallet" open={isOpen} onClose={closeDialog}>
-      <div className="w-[360px]">
-        <div className="mx-auto grid gap-3">
-          <Evm renderOption={Option} />
+      <Suspense>
+        <div className="w-[360px]">
+          <div className="mx-auto grid gap-3">
+            <Evm renderOption={Option} />
+          </div>
         </div>
-      </div>
+      </Suspense>
     </Dialog>
   );
 }
