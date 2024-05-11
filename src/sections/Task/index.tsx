@@ -52,7 +52,7 @@ export function TaskList(props: {
             currentProgress = 0;
           } else if (progress[index]) {
             currentProgress = progress[index];
-          } else if (progress[index - 1] && !progress[index]) {
+          } else if (progress[index - 1] === 1 && !progress[index]) {
             currentProgress = progress[index] ?? 0;
           }
         }
