@@ -43,9 +43,9 @@ function ProjectSkeleton() {
 function ProjectTask({ jobId }: { jobId: string }) {
   const { data: userInfo } = useUserInfo(jobId);
   const { data: tasks } = useTaskList(jobId);
-  const { data: progress } = useTaskProgress(jobId);
+  const { data: progress = [] } = useTaskProgress(jobId);
 
-  if (!tasks || !progress) return <></>;
+  if (!tasks) return <></>;
 
   return (
     <div className="max-w-[720px]">
