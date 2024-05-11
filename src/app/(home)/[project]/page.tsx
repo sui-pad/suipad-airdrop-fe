@@ -42,15 +42,25 @@ function ProjectSkeleton() {
 
 function ProjectTask({ jobId }: { jobId: string }) {
   const { data: userInfo } = useUserInfo(jobId);
+  const { data: info } = useAirdropInfo(jobId);
+
   const { data: tasks } = useTaskList(jobId);
   const { data: progress = [] } = useTaskProgress(jobId);
 
   if (!tasks) return <></>;
 
+  const now = Date.now();
+
   return (
     <div className="max-w-[720px]">
       <h3 className="text-3xl font-bold">Missions</h3>
-      <TaskList jobId={jobId} data={tasks} progress={progress} />
+      <TaskList
+        jobId={jobId}
+        data={tasks}
+        progress={progress}
+        isEnd={!info || now - info.startTime < 0 || now - info.endTime > 0}
+      />
+      
       <Divider className="my-10" />
       <div className="grid gap-y-7">
         <div className="flex items-center gap-x-10">

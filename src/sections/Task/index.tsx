@@ -32,8 +32,13 @@ interface TaskType {
   buttonProps: ButtonType;
 }
 
-export function TaskList(props: { jobId: string, data: ApiTaskType[], progress: (0 | 1 | 2)[], }) {
-  const { jobId, data, progress } = props;
+export function TaskList(props: {
+  jobId: string;
+  data: ApiTaskType[];
+  progress: (0 | 1 | 2)[];
+  isEnd: boolean;
+}) {
+  const { jobId, data, progress, isEnd } = props;
 
   return (
     <div className="mt-8 grid gap-y-7">
@@ -42,7 +47,7 @@ export function TaskList(props: { jobId: string, data: ApiTaskType[], progress: 
 
         let currentProgress: -1 | 0 | 1 | 2 = -1;
 
-        if (progress) {
+        if (progress && !isEnd) {
           if (index === 0 && progress.length === 0) {
             currentProgress = 0;
           } else if (progress[index]) {
