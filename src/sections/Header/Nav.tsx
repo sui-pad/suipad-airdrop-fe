@@ -45,11 +45,10 @@ export default function Nav() {
     <div className="md:flex-1">
       <div
         className={twMerge(
-          "flex gap-10 md:items-center md:justify-center",
+          "hidden gap-10 md:flex md:items-center md:justify-center",
           isMobile
-            ? slide
-              ? "fixed left-0 top-0 -z-10 h-screen w-screen flex-col bg-white p-10 pt-28"
-              : "hidden"
+            ? slide &&
+                "fixed left-0 top-0 -z-10 flex h-screen w-screen flex-col bg-white p-10 pt-28"
             : "",
         )}
       >

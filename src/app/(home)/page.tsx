@@ -17,65 +17,65 @@ import ImgNull from "@/app/assets/null.png";
 
 function AirdropSkeleton() {
   return (
-    <div className="grid gap-x-[30px] md:grid-cols-3">
+    <div className="grid gap-[10px] md:grid-cols-3 md:gap-[30px]">
       <div className="h-[420px] rounded-xl border border-[#DCDADA]">
-        <Skeleton className="h-[154px] rounded-xl md:w-full" />
+        <Skeleton className="h-[154px] w-full rounded-xl" />
         <div className="px-4">
           <div className="flex items-end justify-between">
             <div className="relative z-10 -mt-10 h-20 w-20 rounded-lg bg-white p-1">
-              <Skeleton className="rounded-lg md:h-full md:w-full" />
+              <Skeleton className="h-full w-full rounded-lg" />
             </div>
 
             <div className="flex items-center gap-3">
-              <Skeleton className="md:w-12" variant="text" />
-              <Skeleton variant="text" />
+              <Skeleton className="w-12" variant="text" />
+              <Skeleton className="w-20" variant="text" />
             </div>
           </div>
 
-          <Skeleton className="mt-7 text-3xl md:w-1/3" variant="text" />
-          <Skeleton className="mt-4 md:w-2/3" variant="text" />
+          <Skeleton className="mt-7 text-3xl w-1/3" variant="text" />
+          <Skeleton className="mt-4 w-2/3" variant="text" />
 
-          <Skeleton className="mx-auto mt-12 h-10 md:w-2/3" />
+          <Skeleton className="mx-auto mt-12 h-10 w-2/3" />
         </div>
       </div>
       <div className="h-[420px] rounded-xl border border-[#DCDADA]">
-        <Skeleton className="h-[154px] rounded-xl md:w-full" />
+        <Skeleton className="h-[154px] w-full rounded-xl" />
         <div className="px-4">
           <div className="flex items-end justify-between">
             <div className="relative z-10 -mt-10 h-20 w-20 rounded-lg bg-white p-1">
-              <Skeleton className="rounded-lg md:h-full md:w-full" />
+              <Skeleton className="h-full w-full rounded-lg" />
             </div>
 
             <div className="flex items-center gap-3">
-              <Skeleton className="md:w-12" variant="text" />
-              <Skeleton variant="text" />
+              <Skeleton className="w-12" variant="text" />
+              <Skeleton className="w-20" variant="text" />
             </div>
           </div>
 
-          <Skeleton className="mt-7 text-3xl md:w-1/3" variant="text" />
-          <Skeleton className="mt-4 md:w-2/3" variant="text" />
+          <Skeleton className="mt-7 text-3xl w-1/3" variant="text" />
+          <Skeleton className="mt-4 w-2/3" variant="text" />
 
-          <Skeleton className="mx-auto mt-12 h-10 md:w-2/3" />
+          <Skeleton className="mx-auto mt-12 h-10 w-2/3" />
         </div>
       </div>
       <div className="h-[420px] rounded-xl border border-[#DCDADA]">
-        <Skeleton className="h-[154px] rounded-xl md:w-full" />
+        <Skeleton className="h-[154px] w-full rounded-xl" />
         <div className="px-4">
           <div className="flex items-end justify-between">
             <div className="relative z-10 -mt-10 h-20 w-20 rounded-lg bg-white p-1">
-              <Skeleton className="rounded-lg md:h-full md:w-full" />
+              <Skeleton className="h-full w-full rounded-lg" />
             </div>
 
             <div className="flex items-center gap-3">
-              <Skeleton className="md:w-12" variant="text" />
-              <Skeleton variant="text" />
+              <Skeleton className="w-12" variant="text" />
+              <Skeleton className="w-20" variant="text" />
             </div>
           </div>
 
-          <Skeleton className="mt-7 text-3xl md:w-1/3" variant="text" />
-          <Skeleton className="mt-4 md:w-2/3" variant="text" />
+          <Skeleton className="mt-7 text-3xl w-1/3" variant="text" />
+          <Skeleton className="mt-4 w-2/3" variant="text" />
 
-          <Skeleton className="mx-auto mt-12 h-10 md:w-2/3" />
+          <Skeleton className="mx-auto mt-12 h-10 w-2/3" />
         </div>
       </div>
     </div>
@@ -88,7 +88,7 @@ function AirdropBox(props: AirdropType) {
 
   return (
     <div className="h-[420px] overflow-hidden rounded-xl border border-[#DCDADA] shadow-[0px_5px_16px_0px_rgba(0,0,0,0.08)]">
-      <div className="relative">
+      <div className="relative min-h-[130px]">
         <img src={coverImage} alt="" />
 
         <span className="absolute right-4 top-4 flex h-6 w-[100px] items-center justify-center rounded-full bg-[#6DE0E5] text-sm">
@@ -129,7 +129,7 @@ function AirdropList({ records }: { records: AirdropType[] }) {
     );
 
   return (
-    <div className="grid gap-[10px] md:gap-[30px] md:grid-cols-3">
+    <div className="grid gap-[10px] md:grid-cols-3 md:gap-[30px]">
       {records.map(item => (
         <AirdropBox {...item} key={item.jobId} />
       ))}

@@ -23,18 +23,18 @@ import ImgCalendar from "@/app/assets/calendar.png";
 function ProjectSkeleton() {
   return (
     <div>
-      <Skeleton className="text-5xl md:w-1/3" variant="text" />
+      <Skeleton className="text-2xl md:text-5xl w-1/3" variant="text" />
 
       <div className="mt-8 flex items-center gap-3">
-        <Skeleton className="md:w-12" variant="text" />
-        <Skeleton variant="text" />
+        <Skeleton className="w-12" variant="text" />
+        <Skeleton className="w-20" variant="text" />
       </div>
 
-      <Skeleton className="mt-8 md:w-2/5" variant="text" />
+      <Skeleton className="mt-8 w-2/5" variant="text" />
 
       <div className="mt-[60px]">
-        <Skeleton className="mt-3 md:w-1/6" variant="text" />
-        <Skeleton className="mt-3 md:w-1/2" variant="text" />
+        <Skeleton className="mt-3 w-1/3 md:w-1/6" variant="text" />
+        <Skeleton className="mt-3 w-2/3 md:w-1/2" variant="text" />
       </div>
     </div>
   );

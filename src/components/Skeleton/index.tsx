@@ -7,9 +7,9 @@ const skeletonStyle = cva({
   base: "animate-pulse block",
   variants: {
     variant: {
-      text: "rounded w-16 md:w-20",
-      circular: "h-5 w-5 rounded-full md:h-10 md:w-10",
-      rounded: "rounded h-10 w-20 md:h-20 md:w-40",
+      text: "rounded",
+      circular: "rounded-full",
+      rounded: "rounded",
     },
     colors: {
       primary: "bg-[#EAEAEB]",
