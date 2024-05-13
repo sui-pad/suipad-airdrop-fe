@@ -27,7 +27,7 @@ export default function WalletDialog() {
   return (
     <Dialog title="Connect Wallet" open={isOpen} onClose={closeDialog}>
       <Suspense>
-        <div className="w-[360px]">
+        <div className="w-[85vw] md:mx-auto md:w-[360px]">
           <div className="mx-auto grid gap-3">
             <Evm renderOption={Option} />
           </div>

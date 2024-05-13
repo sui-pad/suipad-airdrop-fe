@@ -17,7 +17,7 @@ import ImgNull from "@/app/assets/null.png";
 
 function AirdropSkeleton() {
   return (
-    <div className="grid grid-cols-3 gap-x-[30px]">
+    <div className="grid gap-x-[30px] md:grid-cols-3">
       <div className="h-[420px] rounded-xl border border-[#DCDADA]">
         <Skeleton className="h-[154px] rounded-xl md:w-full" />
         <div className="px-4">
@@ -124,12 +124,12 @@ function AirdropList({ records }: { records: AirdropType[] }) {
   if (!records.length)
     return (
       <div className="flex h-[420px] items-center justify-center">
-        <Image className="w-40" src={ImgNull} alt="nodata" />
+        <Image className="w-1/3 md:w-40" src={ImgNull} alt="nodata" />
       </div>
     );
 
   return (
-    <div className="grid grid-cols-3 gap-[30px]">
+    <div className="grid gap-[10px] md:gap-[30px] md:grid-cols-3">
       {records.map(item => (
         <AirdropBox {...item} key={item.jobId} />
       ))}
@@ -168,8 +168,8 @@ export default function Home() {
   }, [tab, data]);
 
   return (
-    <div className="mx-auto w-[1280px] rounded-2xl bg-white p-10">
-      <div className="h-[328px] overflow-hidden rounded-xl">
+    <div className="mx-3 rounded-2xl bg-white p-3 md:mx-auto md:w-[1280px] md:p-10">
+      <div className="h-[120px] overflow-hidden rounded-xl md:h-[328px]">
         <video
           className="h-full w-full object-cover"
           src="https://suipadstatic.s3.ap-southeast-1.amazonaws.com/airdrop/odyssey.mp4"
@@ -179,7 +179,7 @@ export default function Home() {
         />
       </div>
 
-      <div className="my-10 flex items-center justify-center gap-x-20 border-b border-b-[#EAEAEA] pb-3 text-xl font-bold leading-none text-[#7D7D7D]">
+      <div className="my-5 flex items-center justify-between border-b border-b-[#EAEAEA] pb-3 font-bold leading-none text-[#7D7D7D] md:my-10 md:justify-center md:gap-x-20 md:text-xl">
         {Object.values(TabEnums).map(item => (
           <>
             <span

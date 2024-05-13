@@ -16,29 +16,25 @@ export async function tryActivation(connection: Connection) {
   }
 }
 
-export async function eagerlyConnect() {
+export async function eagerlyConnect(connectionType: ConnectionType) {
   if (typeof window === "undefined") return;
 
-  const connectionType = getRecentConnectionType();
+  try {
+    const selectedConnection = getConnection(connectionType as ConnectionType);
 
-  if (connectionType) {
-    try {
-      const selectedConnection = getConnection(connectionType as ConnectionType);
+    if (selectedConnection) {
+      const connector = selectedConnection.connector;
 
-      if (selectedConnection) {
-        const connector = selectedConnection.connector;
-
-        if (connector.connectEagerly) {
-          await connector.connectEagerly();
-        } else {
-          await connector.activate();
-        }
-
-        return true;
+      if (connector.connectEagerly) {
+        await connector.connectEagerly();
+      } else {
+        await connector.activate();
       }
-    } catch (error) {
-      console.debug(`web3-react eager connection error: ${error}`);
+
+      return true;
     }
+  } catch (error) {
+    console.debug(`web3-react eager connection error: ${error}`);
   }
 
   return false;
@@ -57,7 +53,7 @@ export async function disconnect() {
         await connector.deactivate?.();
         await connector.resetState();
         setRecentConnectionType(undefined);
-        
+
         return true;
       } catch (error) {
         console.debug(`web3-react eager disconnect error: ${error}`);

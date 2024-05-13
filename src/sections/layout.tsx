@@ -12,7 +12,15 @@ import request, { OptionsType } from "@/utils/request";
 export default function Layout({ children }: { children: React.ReactNode }) {
   return <SWRConfig
     value={{
-      fetcher: (args: [string, OptionsType]) => request(...args),
+      fetcher: (args: [string, OptionsType, any[]]) => {
+        const [url, options, deps] = args;
+
+        if (!deps || deps.every(Boolean)) {
+          return request(url, options)
+        }
+
+        return false
+      },
       revalidateOnFocus: false,
     }}
   >
@@ -20,7 +28,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <Header />
       <Background />
 
-      <div className="pt-[166px] pb-[120px]">
+      <div className="pt-[100px] pb-10 md:pt-[166px] md:pb-[120px]">
         {children}
       </div>
     </Web3Provider>

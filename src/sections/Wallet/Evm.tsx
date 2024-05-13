@@ -1,7 +1,5 @@
 import { useSearchParams } from "next/navigation";
-
-import { useEffect } from "react";
-
+import { useEffect, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 
 import useSWRMutation from "swr/mutation";
@@ -15,9 +13,11 @@ import {
   gateBase,
   bitgetBase,
   tryActivation,
-  switchChain,
+  eagerlyConnect,
   disconnect,
+  switchChain,
   setRecentConnectionType,
+  getRecentConnectionType,
 } from "@/connection/eth";
 import request from "@/utils/request";
 
@@ -50,6 +50,7 @@ interface LoginParams {
 export default function Evm(props: { renderOption: (option: EvmConnection) => JSX.Element }) {
   const { renderOption } = props;
   const searchParams = useSearchParams();
+  const [isEagerlyConnect, setEagerlyConnect] = useState<boolean>(false);
   const { isActive, account, provider, chainId } = useWeb3React();
   const {
     connectionState,
@@ -62,7 +63,7 @@ export default function Evm(props: { renderOption: (option: EvmConnection) => JS
   } = useWalletStore();
   const { closeDialog } = useWalletDialogStore();
 
-  const { trigger: checkLogin } = useSWRMutation<boolean, any, string>(
+  const { trigger: checkLogin } = useSWRMutation<{ walletAddress: string } | false, any, string>(
     "/user/check_login",
     (url, { arg }) => request(url, { body: arg }),
   );
@@ -70,21 +71,34 @@ export default function Evm(props: { renderOption: (option: EvmConnection) => JS
     "/user/login",
     (url, { arg }) => request(url, { body: arg }),
   );
+  const { trigger: logout } = useSWRMutation<boolean, any, string>("/user/logout", url =>
+    request(url),
+  );
 
-  const code = searchParams.get("code")
+  const code = searchParams.get("code");
+
+  const handleEagerlyConnect = async () => {
+    const connectionType = getRecentConnectionType();
+
+    if (connectionType) {
+      setEagerlyConnect(true);
+      const res = await eagerlyConnect(connectionType);
+      if (!res) walletDisconnect();
+    } else {
+      setEagerlyConnect(false);
+    }
+  };
 
   const handleConnect = async (walletConnection: Connection) => {
     if (selectConnector) return;
 
-    setSelectConnector(walletConnection);
     setRecentConnectionType(walletConnection.type);
 
+    setSelectConnector(walletConnection);
     const isConnect = await tryActivation(walletConnection);
+    setSelectConnector(null);
 
-    if (!isConnect) {
-      disconnect();
-      setSelectConnector(null);
-    }
+    if (!isConnect) disconnect();
   };
 
   const handleLogin = async () => {
@@ -94,16 +108,16 @@ export default function Evm(props: { renderOption: (option: EvmConnection) => JS
         await switchChain(ChainId.BNB);
       }
 
-      let isLogin = await checkLogin();
+      let isLogin = isEagerlyConnect && (await checkLogin());
 
-      if (!isLogin) {
+      if (!isLogin || isLogin.walletAddress !== account) {
         const nonce = ["Welcome to SuipadAirdrop:", account].join("\n");
 
         const sign = await provider.getSigner().signMessage(nonce);
 
         const res = await login({ addr: account, sign, code: code ?? "" });
 
-        isLogin = res;
+        if (res) isLogin = { walletAddress: account };
       }
 
       if (isLogin) {
@@ -116,10 +130,27 @@ export default function Evm(props: { renderOption: (option: EvmConnection) => JS
     }
   };
 
-  const handleDisconnect = () => {
+  const handleDisconnect = async () => {
+    await disconnect();
+    await logout();
     setAddress(null);
     setSelectConnector(null);
+    setEagerlyConnect(false);
   };
+
+  console.log(connectionState);
+
+  useEffect(() => {
+    handleEagerlyConnect();
+  }, []);
+
+  useEffect(() => {
+    if (isActive && account && provider) {
+      walletConnecting();
+    } else if (connectionState === ConnectionState.CONNECTED) {
+      walletDisconnect();
+    }
+  }, [isEagerlyConnect, provider, isActive, account]);
 
   useEffect(() => {
     if (connectionState === ConnectionState.CONNECTING) {
@@ -127,15 +158,7 @@ export default function Evm(props: { renderOption: (option: EvmConnection) => JS
     } else if (connectionState === ConnectionState.NULL) {
       handleDisconnect();
     }
-  }, [connectionState]);
-
-  useEffect(() => {
-    if (isActive && account && provider) {
-      walletConnecting();
-    } else {
-      walletDisconnect();
-    }
-  }, [provider, isActive, account]);
+  }, [isEagerlyConnect, connectionState]);
 
   return ETH_WALLETS.map(item => renderOption({ ...item, connect: () => handleConnect(item) }));
 }

@@ -8,7 +8,7 @@ export enum ConnectionState {
 
 interface WalletType {
   address: string | null
-  connectionState: ConnectionState;
+  connectionState: ConnectionState | null;
   selectConnector: string | null;
   setAddress: (address: string | null) => void
   setSelectConnector: (connector: any) => void
@@ -19,7 +19,7 @@ interface WalletType {
 
 export const useWalletStore = create<WalletType>(set => ({
   address: null,
-  connectionState: ConnectionState.NULL,
+  connectionState: null,
   selectConnector: null,
   setAddress: (address) => set({ address }),
   setSelectConnector: (connector) => set({ selectConnector: connector }),

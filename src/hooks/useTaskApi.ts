@@ -21,12 +21,12 @@ export interface AirdropType {
 export interface TaskType {
   taskId: number;
   taskType:
-  | "check"
-  | "connect_twitter"
-  | "follow_twitter"
-  | "share_twitter"
-  | "join_tg_group"
-  | "like_comment_twitter";
+    | "check"
+    | "connect_twitter"
+    | "follow_twitter"
+    | "share_twitter"
+    | "join_tg_group"
+    | "like_comment_twitter";
   step: number;
   content: string;
   action: string;
@@ -90,7 +90,7 @@ export function useUserInfo(jobId: string) {
   return useSWR<{
     inviteCode: string;
     inviteCount: number;
-  }>(["/user/info", { body: connectionState === ConnectionState.CONNECTED ? { jobId } : {} }]);
+  }>(["/user/info", { body: { jobId } }, [connectionState === ConnectionState.CONNECTED]]);
 }
 
 export function useTaskList(jobId: string) {
@@ -102,7 +102,8 @@ export function useTaskProgress(jobId: string) {
 
   return useSWR<(0 | 1 | 2)[]>([
     "/task/progress",
-    { body: connectionState === ConnectionState.CONNECTED ? { jobId } : {} },
+    { body: { jobId } },
+    [connectionState === ConnectionState.CONNECTED],
   ]);
 }
 

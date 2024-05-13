@@ -41,7 +41,7 @@ export function TaskList(props: {
   const { jobId, data, progress, isEnd } = props;
 
   return (
-    <div className="mt-8 grid gap-y-7">
+    <div className="grid gap-y-7">
       {data.map((item, index) => {
         const { taskType, ...other } = item;
 
@@ -166,15 +166,15 @@ export default function Task(props: TaskType) {
 
   return (
     <div className="flex items-center">
-      <span className="flex h-6 w-6 select-none items-center justify-center rounded-full bg-[#6DE0E5] text-lg text-white">
+      <span className="flex h-4 w-4 select-none items-center justify-center rounded-full bg-[#6DE0E5] text-xs text-white md:h-6 md:w-6 md:text-lg">
         {step}
       </span>
 
-      <p className="mx-3 flex-1">{content}</p>
+      <p className="mx-1 md:mx-3 flex-1 text-xs md:text-base">{content}</p>
 
       <Button
         className={cx(
-          "test-base h-8 w-[200px] rounded-full",
+          "h-8 w-[120px] rounded-full text-xs md:w-[200px] md:text-base",
           progress === 1 && "gap-x-2 bg-[#4ec3c9]",
         )}
         loadingClass="w-4"
@@ -182,7 +182,7 @@ export default function Task(props: TaskType) {
         disabled={progress === -1 || progress === 1}
         {...other}
       >
-        {progress === 1 ? <Image className="w-5" src={ImgSuccess} alt="" /> : children}
+        {progress === 1 ? <Image className="w-3 md:w-5" src={ImgSuccess} alt="" /> : children}
       </Button>
     </div>
   );

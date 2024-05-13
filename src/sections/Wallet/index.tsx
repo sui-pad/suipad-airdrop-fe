@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 
 import Button from "@/components/Button";
 
-import { eagerlyConnect } from "@/connection/eth";
 import { formatAddress } from "@/utils/formatAddress";
 
 import WalletDialog from "./WalletDialog";
@@ -13,27 +12,36 @@ import { ConnectionState, useWalletStore, useWalletDialogStore } from "./hooks";
 
 export default function Wallet() {
   const [show, setShow] = useState<boolean>();
-  const { address, connectionState } = useWalletStore();
+  const { address, connectionState, walletDisconnect } = useWalletStore();
   const { openDialog } = useWalletDialogStore();
 
-  useEffect(() => {
-    eagerlyConnect();
-  }, [])
+  const handleDisconnect = async () => {
+    setShow(false);
+    walletDisconnect();
+  };
 
-  if (connectionState === ConnectionState.CONNECTED) {
-    return (
-      <div className="relative">
+  let child = (
+    <Button className="h-10 w-32 font-bold md:h-14 md:w-48 md:text-xl" onClick={openDialog}>
+      Connect Wallet
+    </Button>
+  );
+
+  if (connectionState === ConnectionState.CONNECTED)
+    child = (
+      <>
         <Button
-          className="h-14 w-48 bg-white text-xl font-bold text-black shadow-[0_6px_12px_0_rgba(0,0,0,0.06)] hover:bg-[#f7f7f7]"
+          className="h-10 w-36 bg-white font-bold text-black shadow-[0_6px_12px_0_rgba(0,0,0,0.06)] hover:bg-[#f7f7f7] md:h-14 md:w-48 md:text-xl"
           onClick={() => setShow(true)}
         >
           {formatAddress({ address })}
         </Button>
 
-        {show && <div
-          className="fixed left-0 top-0 h-screen w-screen opacity-0"
-          onClick={() => setShow(false)}
-        />}
+        {show && (
+          <div
+            className="fixed left-0 top-0 h-screen w-screen opacity-0"
+            onClick={() => setShow(false)}
+          />
+        )}
 
         <div
           className={twMerge(
@@ -41,20 +49,20 @@ export default function Wallet() {
             show && "visible mt-3 opacity-100",
           )}
         >
-          <Button className="h-12 w-full bg-white text-lg text-black shadow-[0_6px_12px_0_rgba(0,0,0,0.06)] hover:bg-[#f7f7f7]">
+          <Button
+            className="h-10 w-full bg-white text-black shadow-[0_6px_12px_0_rgba(0,0,0,0.06)] hover:bg-[#f7f7f7] md:h-12 md:text-lg"
+            onClick={handleDisconnect}
+          >
             Disconnect
           </Button>
         </div>
-      </div>
+      </>
     );
-  }
 
   return (
-    <div>
-      <Button className="h-14 w-48 text-xl font-bold" onClick={openDialog}>
-        Connect Wallet
-      </Button>
-      <WalletDialog  />
+    <div className="relative">
+      {child}
+      <WalletDialog />
     </div>
   );
 }
