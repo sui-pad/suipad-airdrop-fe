@@ -138,8 +138,6 @@ export default function Evm(props: { renderOption: (option: EvmConnection) => JS
     setEagerlyConnect(false);
   };
 
-  console.log(connectionState);
-
   useEffect(() => {
     handleEagerlyConnect();
   }, []);

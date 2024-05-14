@@ -9,6 +9,8 @@ import {
   useTaskConnectTwitter,
   useTaskConnectTelegram,
   useTaskJoinTelegram,
+  useTaskConnectDiscord,
+  useTaskJoinDiscord,
   useTaskFollowTwitter,
   useTaskShareTwitter,
   useTaskLikeCommentTwitter,
@@ -92,6 +94,12 @@ export function TaskList(props: {
           );
         }
 
+        if (taskType === "join_dc_group") {
+          return (
+            <JoinDiscord {...other} jobId={jobId} progress={currentProgress} key={other.taskId} />
+          );
+        }
+
         if (taskType === "like_comment_twitter") {
           return (
             <LikeCommentTweet
@@ -148,6 +156,22 @@ export function JoinTelegram(props: TaskBaseType) {
       buttonProps={{
         children: other.progress === 2 ? "Join" : "Connect Telegram",
         onClick: other.progress === 2 ? joinTelegram : connectTelegram,
+      }}
+    />
+  );
+}
+
+export function JoinDiscord(props: TaskBaseType) {
+  const { jobId, taskId, action, ...other } = props;
+  const { trigger: connectDiscord } = useTaskConnectDiscord(jobId, other.step);
+  const joinDiscord = useTaskJoinDiscord(jobId, other.step, action);
+
+  return (
+    <Task
+      {...other}
+      buttonProps={{
+        children: other.progress === 2 ? "Join" : "Connect Discord",
+        onClick: other.progress === 2 ? joinDiscord : connectDiscord,
       }}
     />
   );

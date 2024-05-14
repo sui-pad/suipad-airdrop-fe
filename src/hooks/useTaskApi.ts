@@ -26,6 +26,7 @@ export interface TaskType {
     | "follow_twitter"
     | "share_twitter"
     | "join_tg_group"
+    | "join_dc_group"
     | "like_comment_twitter";
   step: number;
   content: string;
@@ -48,6 +49,7 @@ function windowListener(url: string, callback: () => Promise<any>) {
         if (event.data === "success") {
           await callback();
           reslove(true);
+          return;
         }
 
         reject(false);
@@ -65,7 +67,10 @@ function progressLoop(url: string, loop: () => Promise<any>, callback: (data: an
     async function check() {
       const res = await loop();
 
-      if (callback(res)) reslove(true);
+      if (callback(res)) {
+        reslove(true);
+        return;
+      }
 
       setTimeout(() => {
         check();
@@ -134,6 +139,24 @@ export function useTaskConnectTelegram(jobId: string, step: number) {
 }
 
 export function useTaskJoinTelegram(jobId: string, step: number, action: string) {
+  const { mutate } = useTaskProgress(jobId);
+
+  return () => progressLoop(action, mutate, res => res[step - 1] === 1);
+}
+
+export function useTaskConnectDiscord(jobId: string, step: number) {
+  const { mutate } = useTaskProgress(jobId);
+
+  return useSWRMutation<boolean, any, string>("/discord/oauth_url", async url => {
+    const res = await request<{ authUrl: string }>(url);
+
+    if (res) return windowListener(res.authUrl, mutate);
+
+    return res;
+  });
+}
+
+export function useTaskJoinDiscord(jobId: string, step: number, action: string) {
   const { mutate } = useTaskProgress(jobId);
 
   return () => progressLoop(action, mutate, res => res[step - 1] === 1);
