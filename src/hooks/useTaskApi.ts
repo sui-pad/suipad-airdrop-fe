@@ -14,9 +14,11 @@ export interface AirdropType {
   coverImage: string;
   logo: string;
   illustration: string;
-  tags: string[];
+  tags: { name: string; show: boolean }[];
   state?: string;
 }
+
+export type ProgressType = 0 | 1 | 2;
 
 export interface TaskType {
   taskId: number;
@@ -102,18 +104,18 @@ export function useTaskList(jobId: string) {
   return useSWR<TaskType[]>(["/task/task_list", { body: { jobId } }]);
 }
 
-export function useTaskProgress(jobId: string) {
+export function useTaskInfo(jobId: string) {
   const { connectionState } = useWalletStore();
 
-  return useSWR<(0 | 1 | 2)[]>([
-    "/task/progress",
+  return useSWR<{ points: number; progress: ProgressType[] }>([
+    "/task/task_info",
     { body: { jobId } },
     [connectionState === ConnectionState.CONNECTED],
   ]);
 }
 
 export function useTaskConnectTwitter(jobId: string) {
-  const { mutate } = useTaskProgress(jobId);
+  const { mutate } = useTaskInfo(jobId);
 
   return useSWRMutation<boolean, any, string>("/twitter/oauth_url", async url => {
     const res = await request<{ authUrl: string }>(url);
@@ -125,7 +127,7 @@ export function useTaskConnectTwitter(jobId: string) {
 }
 
 export function useTaskConnectTelegram(jobId: string, step: number) {
-  const { mutate } = useTaskProgress(jobId);
+  const { mutate } = useTaskInfo(jobId);
 
   return useSWRMutation<boolean, any, string>("/bot/connect_tg_bot_url", async url => {
     const res = await request<{ url: string }>(url);
@@ -139,13 +141,13 @@ export function useTaskConnectTelegram(jobId: string, step: number) {
 }
 
 export function useTaskJoinTelegram(jobId: string, step: number, action: string) {
-  const { mutate } = useTaskProgress(jobId);
+  const { mutate } = useTaskInfo(jobId);
 
   return () => progressLoop(action, mutate, res => res[step - 1] === 1);
 }
 
 export function useTaskConnectDiscord(jobId: string, step: number) {
-  const { mutate } = useTaskProgress(jobId);
+  const { mutate } = useTaskInfo(jobId);
 
   return useSWRMutation<boolean, any, string>("/discord/oauth_url", async url => {
     const res = await request<{ authUrl: string }>(url);
@@ -157,13 +159,13 @@ export function useTaskConnectDiscord(jobId: string, step: number) {
 }
 
 export function useTaskJoinDiscord(jobId: string, step: number, action: string) {
-  const { mutate } = useTaskProgress(jobId);
+  const { mutate } = useTaskInfo(jobId);
 
   return () => progressLoop(action, mutate, res => res[step - 1] === 1);
 }
 
 export function useTaskCheckWallet(jobId: string, taskId: number) {
-  const { mutate } = useTaskProgress(jobId);
+  const { mutate } = useTaskInfo(jobId);
 
   return useSWRMutation<boolean, any, string>("/task/check_wallet", async url => {
     const res = await request<boolean>(url, { body: { taskId } });
@@ -175,7 +177,7 @@ export function useTaskCheckWallet(jobId: string, taskId: number) {
 }
 
 export function useTaskFollowTwitter(jobId: string, taskId: number, action: string) {
-  const { mutate } = useTaskProgress(jobId);
+  const { mutate } = useTaskInfo(jobId);
 
   return useSWRMutation<boolean, any, string>("/task/follow_twitter", async url => {
     windowOpen(action);
@@ -188,7 +190,7 @@ export function useTaskFollowTwitter(jobId: string, taskId: number, action: stri
 }
 
 export function useTaskShareTwitter(jobId: string, taskId: number, action: string) {
-  const { mutate } = useTaskProgress(jobId);
+  const { mutate } = useTaskInfo(jobId);
 
   return useSWRMutation<boolean, any, string>("/task/share_twitter", async url => {
     windowOpen(action);
@@ -201,7 +203,7 @@ export function useTaskShareTwitter(jobId: string, taskId: number, action: strin
 }
 
 export function useTaskLikeCommentTwitter(jobId: string, taskId: number, action: string) {
-  const { mutate } = useTaskProgress(jobId);
+  const { mutate } = useTaskInfo(jobId);
 
   return useSWRMutation<boolean, any, string>("/task/like_comment_twitter", async url => {
     windowOpen(action);

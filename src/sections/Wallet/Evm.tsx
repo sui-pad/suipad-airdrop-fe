@@ -75,19 +75,7 @@ export default function Evm(props: { renderOption: (option: EvmConnection) => JS
     request(url),
   );
 
-  const code = searchParams.get("code");
-
-  const handleEagerlyConnect = async () => {
-    const connectionType = getRecentConnectionType();
-
-    if (connectionType) {
-      setEagerlyConnect(true);
-      const res = await eagerlyConnect(connectionType);
-      if (!res) walletDisconnect();
-    } else {
-      setEagerlyConnect(false);
-    }
-  };
+  // console.log(isActive, account,);
 
   const handleConnect = async (walletConnection: Connection) => {
     if (selectConnector) return;
@@ -99,6 +87,18 @@ export default function Evm(props: { renderOption: (option: EvmConnection) => JS
     setSelectConnector(null);
 
     if (!isConnect) disconnect();
+  };
+
+  const handleEagerlyConnect = async () => {
+    const connectionType = getRecentConnectionType();
+
+    if (connectionType) {
+      setEagerlyConnect(true);
+      const res = await eagerlyConnect(connectionType);
+      if (!res) walletDisconnect();
+    } else {
+      setEagerlyConnect(false);
+    }
   };
 
   const handleLogin = async () => {
@@ -114,6 +114,7 @@ export default function Evm(props: { renderOption: (option: EvmConnection) => JS
         const nonce = ["Welcome to SuipadAirdrop:", account].join("\n");
 
         const sign = await provider.getSigner().signMessage(nonce);
+        const code = searchParams.get("code");
 
         const res = await login({ addr: account, sign, code: code ?? "" });
 
@@ -126,7 +127,7 @@ export default function Evm(props: { renderOption: (option: EvmConnection) => JS
         walletConnectSuccess();
       }
     } catch (error) {
-      disconnect();
+      walletDisconnect();
     }
   };
 

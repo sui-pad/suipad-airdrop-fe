@@ -4,6 +4,7 @@ import { cx } from "cva";
 import Button, { ButtonType } from "@/components/Button";
 
 import {
+  ProgressType,
   TaskType as ApiTaskType,
   useTaskCheckWallet,
   useTaskConnectTwitter,
@@ -37,7 +38,7 @@ interface TaskType {
 export function TaskList(props: {
   jobId: string;
   data: ApiTaskType[];
-  progress: (0 | 1 | 2)[];
+  progress: ProgressType[];
   isEnd: boolean;
 }) {
   const { jobId, data, progress, isEnd } = props;
@@ -49,7 +50,7 @@ export function TaskList(props: {
 
         let currentProgress: -1 | 0 | 1 | 2 = -1;
 
-        if (progress && !isEnd) {
+        if (progress || !isEnd) {
           if (index === 0 && progress.length === 0) {
             currentProgress = 0;
           } else if (progress[index]) {

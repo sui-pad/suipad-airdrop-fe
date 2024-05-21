@@ -102,10 +102,10 @@ function AirdropBox(props: AirdropType) {
             <img src={logo} alt="" />
           </div>
 
-          <Tag tags={tags} />
+          <Tag home tags={tags} />
         </div>
 
-        <h2 className="mt-7 text-3xl font-bold leading-none">{name}</h2>
+        <h2 className="mt-7 text-2xl font-bold leading-none">{name}</h2>
         <p className="mt-4 h-12 text-[#5F5F5F]">{description}</p>
 
         <Button
@@ -168,7 +168,7 @@ export default function Home() {
   }, [tab, data]);
 
   return (
-    <div className="mx-3 rounded-2xl bg-white p-3 md:mx-auto md:w-[1280px] md:p-10">
+    <div className="mx-3 rounded-2xl bg-white p-3 md:mx-auto md:w-[1280px] md:p-[30px]">
       <div className="h-[120px] overflow-hidden rounded-xl md:h-[328px]">
         <video
           className="h-full w-full object-cover"

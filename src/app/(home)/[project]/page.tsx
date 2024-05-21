@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useRouter, useParams } from "next/navigation";
-import { Suspense, useMemo } from "react";
+import { Suspense } from "react";
 import { twMerge } from "tailwind-merge";
 
 import Divider from "@/components/Divider";
@@ -15,11 +15,12 @@ import Skeleton from "@/components/Skeleton";
 import { TaskList } from "@/sections/Task";
 
 import {
+  ProgressType,
   AirdropType,
   useUserInfo,
   useAirdropInfo,
   useTaskList,
-  useTaskProgress,
+  useTaskInfo,
 } from "@/hooks/useTaskApi";
 import { useRewardInfo } from "@/hooks/useRewardApi";
 
@@ -78,17 +79,17 @@ function ProjectInfo(props: AirdropType) {
 
 function ProjectTask({
   jobId,
+  progress,
   startTime,
   endTime,
 }: {
   jobId: string;
+  progress: ProgressType[];
   startTime: number;
   endTime: number;
 }) {
-  const { data: userInfo } = useUserInfo(jobId);
-
   const { data: tasks } = useTaskList(jobId);
-  const { data: progress = [] } = useTaskProgress(jobId);
+  const { data: userInfo } = useUserInfo(jobId);
 
   if (!tasks) return <></>;
 
@@ -231,7 +232,11 @@ function ProjectReward({ jobId }: { jobId: string }) {
 
 function ProjectBox() {
   const param = useParams<{ project: string }>();
+
   const { data, isLoading } = useAirdropInfo(param.project);
+  const { data: taskinfo } = useTaskInfo(param.project);
+
+  const { progress = [] } = taskinfo ?? {};
 
   if (!param.project) return <></>;
 
@@ -242,10 +247,11 @@ function ProjectBox() {
       <div className="mt-10 flex md:mt-20">
         <ProjectTask
           jobId={param.project}
+          progress={progress}
           startTime={data?.startTime ?? 0}
           endTime={data?.endTime ?? 0}
         />
-        {data && data.claimStimeTime - Date.now() && <ProjectReward jobId={param.project} />}
+        {data && data.claimStimeTime - Date.now() < 0 && <ProjectReward jobId={param.project} />}
       </div>
     </>
   );
