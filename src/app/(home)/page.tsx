@@ -88,7 +88,7 @@ function AirdropBox(props: AirdropType) {
 
   return (
     <div className="h-[420px] overflow-hidden rounded-xl border border-[#DCDADA] shadow-[0px_5px_16px_0px_rgba(0,0,0,0.08)]">
-      <div className="relative min-h-[130px]">
+      <div className="relative min-h-[150px]">
         <img src={coverImage} alt="" />
 
         <span className="absolute right-4 top-4 flex h-6 w-[100px] items-center justify-center rounded-full bg-[#6DE0E5] text-sm">
@@ -105,7 +105,7 @@ function AirdropBox(props: AirdropType) {
           <Tag home tags={tags} />
         </div>
 
-        <h2 className="mt-7 text-2xl font-bold leading-none">{name}</h2>
+        <h2 className="mt-7 text-[28px] font-bold leading-none">{name}</h2>
         <p className="mt-4 h-12 text-[#5F5F5F]">{description}</p>
 
         <Button
