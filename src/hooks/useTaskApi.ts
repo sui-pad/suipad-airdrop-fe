@@ -7,7 +7,13 @@ import { ConnectionState, useWalletStore } from "@/sections/Wallet/hooks";
 
 import request from "@/utils/request";
 
-export interface AirdropType {
+export interface UserInfoType {
+  walletAddress: string;
+  inviteCode: string;
+  inviteCount: number;
+}
+
+export interface AirdropInfoType {
   jobId: string;
   name: string;
   description: string;
@@ -18,6 +24,8 @@ export interface AirdropType {
   logo: string;
   illustration: string;
   totalReward: string;
+  rewardTokenLogo: string;
+  rewardTokenName: string;
   twitterInviteContent: string;
   social: UrlType;
   tags: { name: string; show: boolean }[];
@@ -29,13 +37,13 @@ export type ProgressType = 0 | 1 | 2;
 export interface TaskType {
   taskId: number;
   taskType:
-  | "check"
-  | "connect_twitter"
-  | "follow_twitter"
-  | "share_twitter"
-  | "join_tg_group"
-  | "join_dc_group"
-  | "like_comment_twitter";
+    | "check"
+    | "connect_twitter"
+    | "follow_twitter"
+    | "share_twitter"
+    | "join_tg_group"
+    | "join_dc_group"
+    | "like_comment_twitter";
   step: number;
   content: string;
   action: string;
@@ -92,20 +100,21 @@ function progressLoop(url: string, loop: () => Promise<any>, callback: (data: an
 }
 
 export function useAirdropList() {
-  return useSWR<AirdropType[]>(["/task/airdrop_list"]);
+  return useSWR<AirdropInfoType[]>(["/task/airdrop_list"]);
 }
 
 export function useAirdropInfo(jobId: string) {
-  return useSWR<AirdropType>(["/task/airdrop_info", { body: { jobId } }]);
+  return useSWR<AirdropInfoType>(["/task/airdrop_info", { body: { jobId } }]);
 }
 
 export function useUserInfo(jobId: string) {
   const { connectionState } = useWalletStore();
 
-  return useSWR<{
-    inviteCode: string;
-    inviteCount: number;
-  }>(["/user/info", { body: { jobId } }, [connectionState === ConnectionState.CONNECTED]]);
+  return useSWR<UserInfoType>([
+    "/user/info",
+    { body: { jobId } },
+    [connectionState === ConnectionState.CONNECTED],
+  ]);
 }
 
 export function useTaskList(jobId: string) {

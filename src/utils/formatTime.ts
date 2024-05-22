@@ -41,7 +41,7 @@ export function formatTime(timestamp?: number) {
       hour: "2-digit",
       minute: "2-digit",
       hourCycle: "h23",
-      timeZone: "Asia/Shanghai",
+      timeZone: "UTC",
     })
     .replaceAll("/", "-");
 }

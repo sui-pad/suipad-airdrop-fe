@@ -11,7 +11,7 @@ import Tag from "@/components/Tag";
 import Button from "@/components/Button";
 import Skeleton from "@/components/Skeleton";
 
-import { AirdropType, useAirdropList } from "@/hooks/useTaskApi";
+import { AirdropInfoType, useAirdropList } from "@/hooks/useTaskApi";
 
 import ImgNull from "@/app/assets/null.png";
 
@@ -82,7 +82,7 @@ function AirdropSkeleton() {
   );
 }
 
-function AirdropBox(props: AirdropType) {
+function AirdropBox(props: AirdropInfoType) {
   const router = useRouter();
   const { jobId, state, coverImage, logo, name, description, tags } = props;
 
@@ -120,7 +120,7 @@ function AirdropBox(props: AirdropType) {
   );
 }
 
-function AirdropList({ records }: { records: AirdropType[] }) {
+function AirdropList({ records }: { records: AirdropInfoType[] }) {
   if (!records.length)
     return (
       <div className="flex h-[420px] items-center justify-center">

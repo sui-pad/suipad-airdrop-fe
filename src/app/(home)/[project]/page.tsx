@@ -18,7 +18,9 @@ import { TaskList } from "@/sections/Task";
 
 import {
   ProgressType,
-  AirdropType,
+  AirdropInfoType,
+  TaskType,
+  UserInfoType,
   useUserInfo,
   useAirdropInfo,
   useTaskList,
@@ -32,6 +34,7 @@ import { formatNumber } from "@/utils/formatNumber";
 
 import ImgBack from "@/app/assets/back.png";
 import ImgCalendar from "@/app/assets/calendar.png";
+import useDevice from "@/hooks/useDevice";
 
 function ProjectSkeleton() {
   return (
@@ -53,19 +56,19 @@ function ProjectSkeleton() {
   );
 }
 
-function ProjectInfo(props: AirdropType) {
-  const { name, social, tags, startTime, endTime, description, totalReward, illustration } = props;
+function ProjectInfo(props: AirdropInfoType) {
+  const { name, social, tags, startTime, endTime, description, illustration } = props;
 
   return (
     <div className="items-center justify-between md:flex">
       <div>
-        <div className="grid gap-y-4 md:gap-y-5">
+        <div className="grid gap-y-4 md:gap-y-6">
           <h2 className="text-2xl font-bold leading-none md:text-5xl">{name}</h2>
           <Social urls={social} />
           <Tag tags={tags} />
           <p className="flex items-center gap-x-2 text-xs md:text-base">
             <Image className="w-4" src={ImgCalendar} alt="" />
-            {formatTimeRange(startTime, endTime) + "(UTC+08:00)"}
+            {formatTimeRange(startTime, endTime) + "(UTC)"}
           </p>
         </div>
 
@@ -75,30 +78,29 @@ function ProjectInfo(props: AirdropType) {
         </div>
       </div>
       <div className="flex flex-col gap-4 md:flex-row md:gap-8">
-        <div className="mt-8 md:mt-[60px] md:w-[250px]">
+        {/* <div className="mt-8 md:mt-[60px] md:w-[250px]">
           <h3 className="font-bold md:text-xl">Total Amount of Airdrop</h3>
           <h2 className="mt-3 text-xl font-bold md:mt-6 md:text-3xl">{totalReward}</h2>
           <p className="mt-4 text-xs md:mt-8 md:text-base">
             Rewards will be distributed after the event time is over.
           </p>
-        </div>
+        </div> */}
 
-        <img className="select-none md:w-60" src={illustration} alt="" />
+        <img className="hidden select-none md:block md:w-80" src={illustration} alt="" />
       </div>
     </div>
   );
 }
 
-interface TaskType {
+interface ProjectTaskType {
   jobId: string;
-  airdropInfo: AirdropType;
+  taskList: TaskType[];
+  airdropInfo: AirdropInfoType;
+  userInfo?: UserInfoType;
   progress?: ProgressType[];
 }
 
-function ProjectTask({ jobId, airdropInfo, progress }: TaskType) {
-  const { data: taskList } = useTaskList(jobId);
-  const { data: userInfo } = useUserInfo(jobId);
-
+function ProjectTask({ jobId, taskList, airdropInfo, userInfo, progress }: ProjectTaskType) {
   if (!taskList) return <></>;
 
   return (
@@ -172,7 +174,7 @@ function ProjectTask({ jobId, airdropInfo, progress }: TaskType) {
 
 function RewardLabel({ label, action }: { label: React.ReactNode; action?: React.ReactNode }) {
   return (
-    <div className="mb-4 flex items-center justify-between text-xl">
+    <div className="mb-1 flex items-center justify-between text-[15px] md:mb-4 md:text-xl">
       <span>{label}</span>
       {action}
     </div>
@@ -185,13 +187,13 @@ function RewardItem({
   action,
 }: {
   className?: string;
-  value: string;
+  value: React.ReactNode;
   action?: React.ReactNode;
 }) {
   return (
     <div
       className={twMerge(
-        "flex items-center justify-between rounded-[20px] bg-[#F0F0F0] px-8 py-5 text-3xl font-bold leading-none",
+        "flex items-center justify-between rounded-xl bg-[#F0F0F0] px-4 py-3 text-xl font-bold leading-none md:rounded-[20px] md:px-8 md:py-5 md:text-3xl",
         className,
       )}
     >
@@ -209,36 +211,48 @@ function Progress({ percent }: { percent: number }) {
   );
 }
 
-function ProjectReward({ jobId }: { jobId: string }) {
+interface ProjectRewardType {
+  jobId: string;
+  airdropInfo: AirdropInfoType;
+  userInfo?: UserInfoType;
+}
+
+function ProjectReward({ jobId, airdropInfo, userInfo }: ProjectRewardType) {
   const { data } = useRewardInfo(jobId);
 
-  if (!data) return <></>;
-
   const token = (
-    <div className="flex items-center justify-between">
-      ${data.tokenName}
-      <img src={data.logo} alt="" />
+    <div className="flex items-center gap-1">
+      ${airdropInfo.rewardTokenName}
+      <img className="w-6 md:w-[30px]" src={airdropInfo.rewardTokenLogo} alt="" />
     </div>
   );
 
   return (
-    <>
-      <Divider className="mx-10" direction="column" />
+    <div className="flex-1">
+      <h3 className="mb-4 text-xl font-bold md:mb-8 md:text-3xl">Reward</h3>
 
-      <div className="flex-1">
-        <h3 className="mb-4 text-xl font-bold md:mb-8 md:text-3xl">Reward</h3>
-
-        <div className="grid gap-10">
+      <div className="grid gap-5 md:gap-10">
+        <div>
+          <RewardLabel label="Total Amount of Airdrop" />
+          <RewardItem value={airdropInfo.totalReward} action={token} />
+          <p className="mt-1 text-xs md:mt-2 md:text-base">
+            Rewards will be distributed after the event time is over.
+          </p>
+        </div>
+        <div>
+          <RewardLabel label="Earn Draw Chances" />
+          <RewardItem value={userInfo ? Math.floor(userInfo.inviteCount / 10) + 1 : "-"} />
+        </div>
+        <div>
+          <RewardLabel label="Earn rewards" />
+          <RewardItem value={formatNumber(data?.balance)} action={token} />
+        </div>
+        {/* 
           <RewardItem value={formatNumber(data?.totalRealse)} action={token} />
 
           <div>
             <RewardLabel label="Release Progress" action="67%" />
             <Progress percent={67} />
-          </div>
-
-          <div>
-            <RewardLabel label="You have Claimed" />
-            <RewardItem value={formatNumber(data?.totalRealse)} action={token} />
           </div>
 
           <div>
@@ -248,25 +262,28 @@ function ProjectReward({ jobId }: { jobId: string }) {
               value={formatNumber(data?.balance)}
               action={token}
             />
-          </div>
+          </div> */}
 
-          <Button
-            className="h-[70px] rounded-2xl text-3xl font-bold"
-            colors="active"
-            disabled={!data.balance}
-          >
-            Claim
-          </Button>
-        </div>
+        <Button
+          className="h-11 rounded-xl text-xl font-bold md:h-[70px] md:rounded-[20px] md:text-3xl"
+          colors="active"
+          disabled={Date.now() - airdropInfo.claimStimeTime < 0}
+        >
+          Claim
+        </Button>
       </div>
-    </>
+    </div>
   );
 }
 
 function ProjectBox() {
   const param = useParams<{ project: string }>();
+  const isMobile = useDevice();
 
   const { data, isLoading } = useAirdropInfo(param.project);
+  const { data: taskList } = useTaskList(param.project);
+
+  const { data: userInfo } = useUserInfo(param.project);
   const { data: taskinfo } = useTaskInfo(param.project);
 
   const { progress } = taskinfo ?? {};
@@ -277,10 +294,19 @@ function ProjectBox() {
     <>
       {isLoading || !data ? <ProjectSkeleton /> : <ProjectInfo {...data} />}
 
-      {data && (
-        <div className="mt-10 flex md:mt-20">
-          <ProjectTask jobId={param.project} progress={progress} airdropInfo={data} />
-          {data.claimStimeTime - Date.now() < 0 && <ProjectReward jobId={param.project} />}
+      {data && taskList && (
+        <div className="mt-10 md:mt-20 md:flex">
+          <ProjectTask
+            jobId={param.project}
+            airdropInfo={data}
+            userInfo={userInfo}
+            taskList={taskList}
+            progress={progress}
+          />
+
+          <Divider className="my-5 md:mx-10" direction={isMobile ? "row" : "column"} />
+
+          <ProjectReward jobId={param.project} airdropInfo={data} userInfo={userInfo} />
         </div>
       )}
     </>
