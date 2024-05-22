@@ -104,7 +104,7 @@ function ProjectTask({ jobId, taskList, airdropInfo, userInfo, progress }: Proje
   if (!taskList) return <></>;
 
   return (
-    <div className="max-w-[720px] flex-1">
+    <div className="flex-1">
       <h3 className="mb-4 text-xl font-bold md:mb-8 md:text-3xl">Missions</h3>
       <TaskList
         jobId={jobId}
