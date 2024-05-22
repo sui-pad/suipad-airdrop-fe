@@ -26,12 +26,14 @@ interface TaskBaseType {
   content: string;
   action: string;
   progress: -1 | 0 | 1 | 2;
+  isEnd: boolean;
 }
 
 interface TaskType {
   step: number;
   content: string;
   progress: -1 | 0 | 1 | 2;
+  isEnd: boolean;
   buttonProps: ButtonType;
 }
 
@@ -50,19 +52,25 @@ export function TaskList(props: {
 
         let currentProgress: -1 | 0 | 1 | 2 = -1;
 
-        if (progress || !isEnd) {
-          if (progress?.length === 0 && index === 0) {
+        if (progress) {
+          if (index === 0 && progress.length === 0) {
             currentProgress = 0;
-          } else if (progress?.[index]) {
+          } else if (progress[index]) {
             currentProgress = progress[index];
-          } else if (progress?.[index - 1] === 1 && !progress?.[index]) {
+          } else if (progress[index - 1] === 1 && !progress[index]) {
             currentProgress = progress[index] ?? 0;
           }
         }
 
         if (taskType === "check") {
           return (
-            <CheckWallet {...other} jobId={jobId} progress={currentProgress} key={other.taskId} />
+            <CheckWallet
+              {...other}
+              jobId={jobId}
+              progress={currentProgress}
+              isEnd={isEnd}
+              key={other.taskId}
+            />
           );
         }
 
@@ -72,6 +80,7 @@ export function TaskList(props: {
               {...other}
               jobId={jobId}
               progress={currentProgress}
+              isEnd={isEnd}
               key={other.taskId}
             />
           );
@@ -79,25 +88,49 @@ export function TaskList(props: {
 
         if (taskType === "follow_twitter") {
           return (
-            <FollowTwitter {...other} jobId={jobId} progress={currentProgress} key={other.taskId} />
+            <FollowTwitter
+              {...other}
+              jobId={jobId}
+              progress={currentProgress}
+              isEnd={isEnd}
+              key={other.taskId}
+            />
           );
         }
 
         if (taskType === "share_twitter") {
           return (
-            <ShareTwitter {...other} jobId={jobId} progress={currentProgress} key={other.taskId} />
+            <ShareTwitter
+              {...other}
+              jobId={jobId}
+              progress={currentProgress}
+              isEnd={isEnd}
+              key={other.taskId}
+            />
           );
         }
 
         if (taskType === "join_tg_group") {
           return (
-            <JoinTelegram {...other} jobId={jobId} progress={currentProgress} key={other.taskId} />
+            <JoinTelegram
+              {...other}
+              jobId={jobId}
+              progress={currentProgress}
+              isEnd={isEnd}
+              key={other.taskId}
+            />
           );
         }
 
         if (taskType === "join_dc_group") {
           return (
-            <JoinDiscord {...other} jobId={jobId} progress={currentProgress} key={other.taskId} />
+            <JoinDiscord
+              {...other}
+              jobId={jobId}
+              progress={currentProgress}
+              isEnd={isEnd}
+              key={other.taskId}
+            />
           );
         }
 
@@ -107,6 +140,7 @@ export function TaskList(props: {
               {...other}
               jobId={jobId}
               progress={currentProgress}
+              isEnd={isEnd}
               key={other.taskId}
             />
           );
@@ -186,7 +220,7 @@ export function LikeCommentTweet(props: TaskBaseType) {
 }
 
 export default function Task(props: TaskType) {
-  const { step, content, progress, buttonProps } = props;
+  const { step, content, progress, isEnd, buttonProps } = props;
   const { children, ...other } = buttonProps;
 
   return (
@@ -195,7 +229,7 @@ export default function Task(props: TaskType) {
         {step}
       </span>
 
-      <p className="mx-1 md:mx-3 flex-1 text-xs md:text-base">{content}</p>
+      <p className="mx-1 flex-1 text-xs md:mx-3 md:text-base">{content}</p>
 
       <Button
         className={cx(
@@ -204,7 +238,7 @@ export default function Task(props: TaskType) {
         )}
         loadingClass="w-4"
         colors="secondary"
-        disabled={progress === -1 || progress === 1}
+        disabled={isEnd || progress === -1 || progress === 1}
         {...other}
       >
         {progress === 1 ? <Image className="w-3 md:w-5" src={ImgSuccess} alt="" /> : children}
