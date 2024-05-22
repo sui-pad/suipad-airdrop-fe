@@ -53,7 +53,7 @@ export function TaskList(props: {
         let currentProgress: -1 | 0 | 1 | 2 = -1;
 
         if (progress) {
-          if (index === 0 && progress.length === 0) {
+          if (index === 0 && (progress.length === 0 || progress[index] === 0)) {
             currentProgress = 0;
           } else if (progress[index]) {
             currentProgress = progress[index];
