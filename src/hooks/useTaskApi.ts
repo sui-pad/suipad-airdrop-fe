@@ -1,6 +1,7 @@
 import useSWR from "swr";
 import useSWRMutation from "swr/mutation";
 
+import { showTips } from "@/components/Popover";
 import { ConnectionState, useWalletStore } from "@/sections/Wallet/hooks";
 import request from "@/utils/request";
 
@@ -23,13 +24,13 @@ export type ProgressType = 0 | 1 | 2;
 export interface TaskType {
   taskId: number;
   taskType:
-    | "check"
-    | "connect_twitter"
-    | "follow_twitter"
-    | "share_twitter"
-    | "join_tg_group"
-    | "join_dc_group"
-    | "like_comment_twitter";
+  | "check"
+  | "connect_twitter"
+  | "follow_twitter"
+  | "share_twitter"
+  | "join_tg_group"
+  | "join_dc_group"
+  | "like_comment_twitter";
   step: number;
   content: string;
   action: string;
@@ -53,6 +54,8 @@ function windowListener(url: string, callback: () => Promise<any>) {
           reslove(true);
           return;
         }
+
+        showTips(event.data);
 
         reject(false);
       }

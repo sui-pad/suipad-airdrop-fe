@@ -3,7 +3,6 @@
 import Image from "next/image";
 import React, { useEffect, useState, useRef } from "react";
 
-import { cva } from "cva";
 import { twMerge } from "tailwind-merge";
 
 import show from "./show";

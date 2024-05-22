@@ -38,7 +38,7 @@ interface TaskType {
 export function TaskList(props: {
   jobId: string;
   data: ApiTaskType[];
-  progress: ProgressType[];
+  progress?: ProgressType[];
   isEnd: boolean;
 }) {
   const { jobId, data, progress, isEnd } = props;
@@ -51,11 +51,11 @@ export function TaskList(props: {
         let currentProgress: -1 | 0 | 1 | 2 = -1;
 
         if (progress || !isEnd) {
-          if (index === 0 && progress.length === 0) {
+          if (progress?.length === 0 && index === 0) {
             currentProgress = 0;
-          } else if (progress[index]) {
+          } else if (progress?.[index]) {
             currentProgress = progress[index];
-          } else if (progress[index - 1] === 1 && !progress[index]) {
+          } else if (progress?.[index - 1] === 1 && !progress?.[index]) {
             currentProgress = progress[index] ?? 0;
           }
         }

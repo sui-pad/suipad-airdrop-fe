@@ -84,7 +84,7 @@ function ProjectTask({
   endTime,
 }: {
   jobId: string;
-  progress: ProgressType[];
+  progress?: ProgressType[];
   startTime: number;
   endTime: number;
 }) {
@@ -236,7 +236,7 @@ function ProjectBox() {
   const { data, isLoading } = useAirdropInfo(param.project);
   const { data: taskinfo } = useTaskInfo(param.project);
 
-  const { progress = [] } = taskinfo ?? {};
+  const { progress } = taskinfo ?? {};
 
   if (!param.project) return <></>;
 
