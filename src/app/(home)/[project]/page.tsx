@@ -154,7 +154,7 @@ function ProjectTask({ jobId, taskList, airdropInfo, userInfo, progress }: Proje
                 )
               }
             >
-              Share On Tweet
+              Share On X
             </Button>
           </div>
         </div>
