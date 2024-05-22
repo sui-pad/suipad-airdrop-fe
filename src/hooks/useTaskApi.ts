@@ -1,8 +1,10 @@
 import useSWR from "swr";
 import useSWRMutation from "swr/mutation";
 
+import { UrlType } from "@/components/Social";
 import { showTips } from "@/components/Popover";
 import { ConnectionState, useWalletStore } from "@/sections/Wallet/hooks";
+
 import request from "@/utils/request";
 
 export interface AirdropType {
@@ -15,6 +17,9 @@ export interface AirdropType {
   coverImage: string;
   logo: string;
   illustration: string;
+  totalReward: string;
+  twitterInviteContent: string;
+  social: UrlType;
   tags: { name: string; show: boolean }[];
   state?: string;
 }
@@ -36,7 +41,7 @@ export interface TaskType {
   action: string;
 }
 
-function windowOpen(url: string) {
+export function windowOpen(url: string) {
   return window.open(url, "", "width=1080,height=700,left=200,top=200");
 }
 

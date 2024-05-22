@@ -3,10 +3,12 @@
 import Image from "next/image";
 import { useRouter, useParams } from "next/navigation";
 import { Suspense } from "react";
+import { cx } from "cva";
 import { twMerge } from "tailwind-merge";
 
 import Divider from "@/components/Divider";
 import Tag from "@/components/Tag";
+import Social from "@/components/Social";
 import Button from "@/components/Button";
 import Clipboard from "@/components/Clipboard";
 import { showSucc } from "@/components/Popover";
@@ -23,12 +25,12 @@ import {
   useTaskInfo,
 } from "@/hooks/useTaskApi";
 import { useRewardInfo } from "@/hooks/useRewardApi";
+import { windowOpen } from "@/hooks/useTaskApi";
 
 import { formatTimeRange } from "@/utils/formatTime";
 import { formatNumber } from "@/utils/formatNumber";
 
 import ImgBack from "@/app/assets/back.png";
-import ImgCopy from "@/app/assets/copy.png";
 import ImgCalendar from "@/app/assets/calendar.png";
 
 function ProjectSkeleton() {
@@ -52,13 +54,14 @@ function ProjectSkeleton() {
 }
 
 function ProjectInfo(props: AirdropType) {
-  const { name, tags, startTime, endTime, description, illustration } = props;
+  const { name, social, tags, startTime, endTime, description, totalReward, illustration } = props;
 
   return (
-    <div className="flex items-center justify-between">
+    <div className="items-center justify-between md:flex">
       <div>
-        <div className="grid gap-y-4 md:gap-y-8">
+        <div className="grid gap-y-4 md:gap-y-5">
           <h2 className="text-2xl font-bold leading-none md:text-5xl">{name}</h2>
+          <Social urls={social} />
           <Tag tags={tags} />
           <p className="flex items-center gap-x-2 text-xs md:text-base">
             <Image className="w-4" src={ImgCalendar} alt="" />
@@ -71,66 +74,96 @@ function ProjectInfo(props: AirdropType) {
           <p className="mt-1 text-sm md:mt-3 md:text-xl">{description}</p>
         </div>
       </div>
+      <div className="flex flex-col gap-4 md:flex-row md:gap-8">
+        <div className="mt-8 md:mt-[60px] md:w-[250px]">
+          <h3 className="font-bold md:text-xl">Total Amount of Airdrop</h3>
+          <h2 className="mt-3 text-xl font-bold md:mt-6 md:text-3xl">{totalReward}</h2>
+          <p className="mt-4 text-xs md:mt-8 md:text-base">
+            Rewards will be distributed after the event time is over.
+          </p>
+        </div>
 
-      <img className="mr-5 hidden w-80 select-none md:block" src={illustration} alt="" />
+        <img className="select-none md:w-60" src={illustration} alt="" />
+      </div>
     </div>
   );
 }
 
-function ProjectTask({
-  jobId,
-  progress,
-  startTime,
-  endTime,
-}: {
+interface TaskType {
   jobId: string;
+  airdropInfo: AirdropType;
   progress?: ProgressType[];
-  startTime: number;
-  endTime: number;
-}) {
-  const { data: tasks } = useTaskList(jobId);
+}
+
+function ProjectTask({ jobId, airdropInfo, progress }: TaskType) {
+  const { data: taskList } = useTaskList(jobId);
   const { data: userInfo } = useUserInfo(jobId);
 
-  if (!tasks) return <></>;
-
-  const now = Date.now();
+  if (!taskList) return <></>;
 
   return (
     <div className="max-w-[720px] flex-1">
       <h3 className="mb-4 text-xl font-bold md:mb-8 md:text-3xl">Missions</h3>
       <TaskList
         jobId={jobId}
-        data={tasks}
+        data={taskList}
         progress={progress}
-        isEnd={now - startTime < 0 || now - endTime > 0}
+        isEnd={Date.now() - airdropInfo.startTime < 0 || Date.now() - airdropInfo.endTime > 0}
       />
 
-      <Divider className="my-10" />
+      <Divider className="my-6 md:my-10" />
 
       <div className="grid gap-y-7">
-        <div className="flex items-center gap-x-3 md:gap-x-10">
-          <p className="text-xs md:w-[300px] md:text-base">
-            Invite more people for a higher chance of winning the draw.
+        <div className="flex flex-col gap-3 md:flex-row md:items-center">
+          <p className="flex-1 text-xs md:text-base">
+            Invite more people and get more lottery chances. <br />
+            Copy your exclusive invitation link.
           </p>
-          <span className="text-xs underline md:text-base">{userInfo?.inviteCode ?? "-"}</span>
+          {/* <span className="text-xs underline md:text-base">{userInfo?.inviteCode ?? "-"}</span> */}
 
-          <Clipboard
-            text={location.href + "?code=" + userInfo?.inviteCode}
-            callback={() => {
-              showSucc("Copied");
-            }}
-          >
-            <span className="flex h-8 w-[50px] cursor-pointer select-none items-center justify-center rounded-full bg-[#4EC3C9]">
-              <Image className="w-4" src={ImgCopy} alt="" />
-            </span>
-          </Clipboard>
+          <div className="grid grid-cols-2 justify-items-center gap-3 md:grid-cols-1">
+            <Clipboard
+              className={cx(!userInfo && "pointer-events-none")}
+              text={location.href + "?code=" + userInfo?.inviteCode}
+              callback={() => {
+                showSucc("Copied");
+              }}
+            >
+              <Button
+                className="h-8 w-[140px] rounded-full text-xs md:w-[200px] md:text-base"
+                loadingClass="w-4"
+                colors="active"
+                disabled={!userInfo}
+              >
+                Copy Invitation Link
+              </Button>
+            </Clipboard>
+            <Button
+              className="h-8 w-[140px] rounded-full text-xs md:w-[200px] md:text-base"
+              loadingClass="w-4"
+              colors="active"
+              disabled={!userInfo}
+              onClick={() =>
+                windowOpen(
+                  airdropInfo.twitterInviteContent.replace(
+                    "$invite_url$",
+                    location.href + "?code=" + userInfo?.inviteCode,
+                  ),
+                )
+              }
+            >
+              Share On Tweet
+            </Button>
+          </div>
         </div>
-        <div className="flex items-center gap-x-10">
-          <p className=" text-xs md:text-base">Your current number of invited friends is</p>
+        <div className="flex items-center gap-3">
+          <p className="flex-1 text-xs md:text-base">Your current number of invited friends is</p>
 
-          <span className="flex h-8 w-[50px] items-center justify-center rounded-full bg-[#F0F0F0]">
-            {userInfo?.inviteCount ?? 0}
-          </span>
+          <div className="md:w-[200px]">
+            <span className="flex h-8 w-20 items-center justify-center rounded-full bg-[#F0F0F0]">
+              {userInfo?.inviteCount ?? 0}
+            </span>
+          </div>
         </div>
       </div>
     </div>
@@ -244,15 +277,12 @@ function ProjectBox() {
     <>
       {isLoading || !data ? <ProjectSkeleton /> : <ProjectInfo {...data} />}
 
-      <div className="mt-10 flex md:mt-20">
-        <ProjectTask
-          jobId={param.project}
-          progress={progress}
-          startTime={data?.startTime ?? 0}
-          endTime={data?.endTime ?? 0}
-        />
-        {data && data.claimStimeTime - Date.now() < 0 && <ProjectReward jobId={param.project} />}
-      </div>
+      {data && (
+        <div className="mt-10 flex md:mt-20">
+          <ProjectTask jobId={param.project} progress={progress} airdropInfo={data} />
+          {data.claimStimeTime - Date.now() < 0 && <ProjectReward jobId={param.project} />}
+        </div>
+      )}
     </>
   );
 }

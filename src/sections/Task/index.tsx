@@ -180,6 +180,13 @@ export function ShareTwitter(props: TaskBaseType) {
   return <Task {...other} buttonProps={{ children: "Share", onClick: shareTwitter }} />;
 }
 
+export function LikeCommentTweet(props: TaskBaseType) {
+  const { jobId, taskId, action, ...other } = props;
+  const { trigger: connectTelegram } = useTaskLikeCommentTwitter(jobId, taskId, action);
+
+  return <Task {...other} buttonProps={{ children: "Like & Comment", onClick: connectTelegram }} />;
+}
+
 export function JoinTelegram(props: TaskBaseType) {
   const { jobId, taskId, action, ...other } = props;
   const { trigger: connectTelegram } = useTaskConnectTelegram(jobId, other.step);
@@ -210,13 +217,6 @@ export function JoinDiscord(props: TaskBaseType) {
       }}
     />
   );
-}
-
-export function LikeCommentTweet(props: TaskBaseType) {
-  const { jobId, taskId, action, ...other } = props;
-  const { trigger: connectTelegram } = useTaskLikeCommentTwitter(jobId, taskId, action);
-
-  return <Task {...other} buttonProps={{ children: "Like & Comment", onClick: connectTelegram }} />;
 }
 
 export default function Task(props: TaskType) {

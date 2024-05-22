@@ -1,5 +1,5 @@
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 
 import useSWRMutation from "swr/mutation";
@@ -159,5 +159,9 @@ export default function Evm(props: { renderOption: (option: EvmConnection) => JS
     }
   }, [isEagerlyConnect, connectionState]);
 
-  return ETH_WALLETS.map(item => renderOption({ ...item, connect: () => handleConnect(item) }));
+  return ETH_WALLETS.map(item => (
+    <React.Fragment key={item.name}>
+      {renderOption({ ...item, connect: () => handleConnect(item) })}
+    </React.Fragment>
+  ));
 }
