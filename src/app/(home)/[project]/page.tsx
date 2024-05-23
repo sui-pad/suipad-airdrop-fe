@@ -14,6 +14,8 @@ import Clipboard from "@/components/Clipboard";
 import { showSucc } from "@/components/Popover";
 import Skeleton from "@/components/Skeleton";
 
+import Header from "@/sections/Header";
+import Wallet from "@/sections/Wallet";
 import { TaskList } from "@/sections/Task";
 
 import {
@@ -277,6 +279,7 @@ function ProjectReward({ jobId, airdropInfo, userInfo }: ProjectRewardType) {
 }
 
 function ProjectBox() {
+  const router = useRouter();
   const param = useParams<{ project: string }>();
   const isMobile = useDevice();
 
@@ -292,40 +295,42 @@ function ProjectBox() {
 
   return (
     <>
-      {isLoading || !data ? <ProjectSkeleton /> : <ProjectInfo {...data} />}
+      <Header wallet={data && <Wallet chain={data.chain} />} />
 
-      {data && taskList && (
-        <div className="mt-10 md:mt-20 md:flex">
-          <ProjectTask
-            jobId={param.project}
-            airdropInfo={data}
-            userInfo={userInfo}
-            taskList={taskList}
-            progress={progress}
-          />
+      <div className="pb-10 pt-[100px] md:pb-[120px] md:pt-[166px]">
+        <div className="mx-3 rounded-2xl bg-white px-3 md:mx-auto md:w-[1280px] md:px-[60px]">
+          <div className="inline-block cursor-pointer pt-5" onClick={() => router.replace("/")}>
+            <Image className="w-5 md:w-8" src={ImgBack} alt="" />
+          </div>
+          <div className="py-5 md:py-10">
+            {isLoading || !data ? <ProjectSkeleton /> : <ProjectInfo {...data} />}
 
-          <Divider className="my-5 md:mx-10" direction={isMobile ? "row" : "column"} />
+            {data && taskList && (
+              <div className="mt-10 md:mt-20 md:flex">
+                <ProjectTask
+                  jobId={param.project}
+                  airdropInfo={data}
+                  userInfo={userInfo}
+                  taskList={taskList}
+                  progress={progress}
+                />
 
-          <ProjectReward jobId={param.project} airdropInfo={data} userInfo={userInfo} />
+                <Divider className="my-5 md:mx-10" direction={isMobile ? "row" : "column"} />
+
+                <ProjectReward jobId={param.project} airdropInfo={data} userInfo={userInfo} />
+              </div>
+            )}
+          </div>
         </div>
-      )}
+      </div>
     </>
   );
 }
 
 export default function Project() {
-  const router = useRouter();
-
   return (
-    <div className="mx-3 rounded-2xl bg-white px-3 md:mx-auto md:w-[1280px] md:px-[60px]">
-      <div className="inline-block cursor-pointer pt-5" onClick={() => router.replace("/")}>
-        <Image className="w-5 md:w-8" src={ImgBack} alt="" />
-      </div>
-      <div className="py-5 md:py-10">
-        <Suspense fallback={<ProjectSkeleton />}>
-          <ProjectBox />
-        </Suspense>
-      </div>
-    </div>
+    <Suspense>
+      <ProjectBox />
+    </Suspense>
   );
 }

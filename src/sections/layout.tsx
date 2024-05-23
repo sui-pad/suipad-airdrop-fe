@@ -2,10 +2,10 @@
 
 import { SWRConfig } from "swr";
 
-import Header from "@/sections/Header";
 import Background from "@/sections/Background";
 
-import Web3Provider from "@/context/eth";
+import EvnProvider from "@/context/eth";
+import SuiProvider from "@/context/sui";
 
 import request, { OptionsType } from "@/utils/request";
 
@@ -24,13 +24,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       revalidateOnFocus: false,
     }}
   >
-    <Web3Provider>
-      <Header />
-      <Background />
-
-      <div className="pt-[100px] pb-10 md:pt-[166px] md:pb-[120px]">
+    <EvnProvider>
+      <SuiProvider>
+        <Background />
         {children}
-      </div>
-    </Web3Provider>
+      </SuiProvider>
+    </EvnProvider>
   </SWRConfig>
 }

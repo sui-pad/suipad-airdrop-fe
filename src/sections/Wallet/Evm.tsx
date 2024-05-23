@@ -2,8 +2,6 @@ import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 
-import useSWRMutation from "swr/mutation";
-
 import {
   ChainId,
   Connection,
@@ -19,9 +17,11 @@ import {
   setRecentConnectionType,
   getRecentConnectionType,
 } from "@/connection/eth";
-import request from "@/utils/request";
 
-import { useWalletStore, useWalletDialogStore, ConnectionState } from "./hooks";
+import { useCheckLogin, useEvmLogin, useLogout } from "@/hooks/useLoginApi";
+
+import { OptionType } from "./Option";
+import { ConnectionState, useWalletStore, useWalletDialogStore } from "./hooks";
 
 import ImgMetamask from "./images/Metamask.png";
 import ImgOkx from "./images/Okx.png";
@@ -37,17 +37,7 @@ export const ETH_WALLETS: Connection[] = [
   { ...bitgetBase, name: "Bitget Wallet", icon: ImgBitget },
 ];
 
-export interface EvmConnection extends Connection {
-  connect: () => void;
-}
-
-interface LoginParams {
-  addr: string;
-  sign: string;
-  code: string | null;
-}
-
-export default function Evm(props: { renderOption: (option: EvmConnection) => JSX.Element }) {
+export default function Evm(props: { renderOption: (option: OptionType) => JSX.Element }) {
   const { renderOption } = props;
   const searchParams = useSearchParams();
   const [isEagerlyConnect, setEagerlyConnect] = useState<boolean>(false);
@@ -63,17 +53,9 @@ export default function Evm(props: { renderOption: (option: EvmConnection) => JS
   } = useWalletStore();
   const { closeDialog } = useWalletDialogStore();
 
-  const { trigger: checkLogin } = useSWRMutation<{ walletAddress: string } | false, any, string>(
-    "/user/check_login",
-    (url, { arg }) => request(url, { body: arg }),
-  );
-  const { trigger: login } = useSWRMutation<boolean, any, string, LoginParams>(
-    "/user/login",
-    (url, { arg }) => request(url, { body: arg }),
-  );
-  const { trigger: logout } = useSWRMutation<boolean, any, string>("/user/logout", url =>
-    request(url),
-  );
+  const { trigger: checkLogin } = useCheckLogin();
+  const { trigger: login } = useEvmLogin();
+  const { trigger: logout } = useLogout();
 
   // console.log(isActive, account,);
 
@@ -83,10 +65,8 @@ export default function Evm(props: { renderOption: (option: EvmConnection) => JS
     setRecentConnectionType(walletConnection.type);
 
     setSelectConnector(walletConnection);
-    const isConnect = await tryActivation(walletConnection);
+    await tryActivation(walletConnection);
     setSelectConnector(null);
-
-    if (!isConnect) disconnect();
   };
 
   const handleEagerlyConnect = async () => {
@@ -149,7 +129,7 @@ export default function Evm(props: { renderOption: (option: EvmConnection) => JS
     } else if (connectionState === ConnectionState.CONNECTED) {
       walletDisconnect();
     }
-  }, [isEagerlyConnect, provider, isActive, account]);
+  }, [provider, isActive, account]);
 
   useEffect(() => {
     if (connectionState === ConnectionState.CONNECTING) {
@@ -157,7 +137,7 @@ export default function Evm(props: { renderOption: (option: EvmConnection) => JS
     } else if (connectionState === ConnectionState.NULL) {
       handleDisconnect();
     }
-  }, [isEagerlyConnect, connectionState]);
+  }, [connectionState]);
 
   return ETH_WALLETS.map(item => (
     <React.Fragment key={item.name}>

@@ -11,6 +11,8 @@ import Tag from "@/components/Tag";
 import Button from "@/components/Button";
 import Skeleton from "@/components/Skeleton";
 
+import Header from "@/sections/Header";
+
 import { AirdropInfoType, useAirdropList } from "@/hooks/useTaskApi";
 
 import ImgNull from "@/app/assets/null.png";
@@ -84,16 +86,21 @@ function AirdropSkeleton() {
 
 function AirdropBox(props: AirdropInfoType) {
   const router = useRouter();
-  const { jobId, state, coverImage, logo, name, description, tags } = props;
+  const { jobId, state, coverImage, logo, chainLogo, name, description, tags } = props;
 
   return (
-    <div className="h-96 md:h-[420px] overflow-hidden rounded-xl border border-[#DCDADA] shadow-[0px_5px_16px_0px_rgba(0,0,0,0.08)]">
+    <div className="h-96 overflow-hidden rounded-xl border border-[#DCDADA] shadow-[0px_5px_16px_0px_rgba(0,0,0,0.08)] md:h-[420px]">
       <div className="relative">
         <img className="w-full" src={coverImage} alt="" />
 
-        <span className="absolute right-4 top-4 flex h-6 w-[100px] items-center justify-center rounded-full bg-[#6DE0E5] text-sm">
-          {state}
-        </span>
+        <div className="absolute left-0 top-2.5 flex w-full items-center justify-between px-4 ">
+          <div className="w-9 h-9">
+            <img src={chainLogo} alt="chainlogo" />
+          </div>
+          <span className="flex h-6 w-[100px] items-center justify-center rounded-full bg-[#6DE0E5] text-sm">
+            {state}
+          </span>
+        </div>
       </div>
 
       <div className="px-4">
@@ -168,33 +175,39 @@ export default function Home() {
   }, [tab, data]);
 
   return (
-    <div className="mx-3 rounded-2xl bg-white p-3 md:mx-auto md:w-[1250px] md:p-10">
-      <div className="h-[120px] overflow-hidden rounded-xl md:h-[328px]">
-        <video
-          className="h-full w-full object-cover"
-          src="https://suipadstatic.s3.ap-southeast-1.amazonaws.com/airdrop/odyssey.mp4"
-          muted
-          loop
-          autoPlay
-        />
-      </div>
+    <>
+      <Header />
 
-      <div className="my-5 flex items-center justify-between border-b border-b-[#EAEAEA] pb-3 font-bold leading-none text-[#7D7D7D] md:my-10 md:justify-center md:gap-x-20 md:text-xl">
-        {Object.values(TabEnums).map(item => (
-          <span
-            className={twMerge("relative cursor-pointer", item === tab && "text-black")}
-            onClick={() => setTab(item)}
-            key={item}
-          >
-            {item}
-            {item === tab && (
-              <span className="absolute left-0 top-full mt-[9px] h-[3px] w-full bg-[#4EC3C9]" />
-            )}
-          </span>
-        ))}
-      </div>
+      <div className="pb-10 pt-[100px] md:pb-[120px] md:pt-[166px]">
+        <div className="mx-3 rounded-2xl bg-white p-3 md:mx-auto md:w-[1250px] md:p-10">
+          <div className="h-[120px] overflow-hidden rounded-xl md:h-[328px]">
+            <video
+              className="h-full w-full object-cover"
+              src="https://suipadstatic.s3.ap-southeast-1.amazonaws.com/airdrop/odyssey.mp4"
+              muted
+              loop
+              autoPlay
+            />
+          </div>
 
-      {isLoading ? <AirdropSkeleton /> : <AirdropList records={records ? records : []} />}
-    </div>
+          <div className="my-5 flex items-center justify-between border-b border-b-[#EAEAEA] pb-3 font-bold leading-none text-[#7D7D7D] md:my-10 md:justify-center md:gap-x-20 md:text-xl">
+            {Object.values(TabEnums).map(item => (
+              <span
+                className={twMerge("relative cursor-pointer", item === tab && "text-black")}
+                onClick={() => setTab(item)}
+                key={item}
+              >
+                {item}
+                {item === tab && (
+                  <span className="absolute left-0 top-full mt-[9px] h-[3px] w-full bg-[#4EC3C9]" />
+                )}
+              </span>
+            ))}
+          </div>
+
+          {isLoading ? <AirdropSkeleton /> : <AirdropList records={records ? records : []} />}
+        </div>
+      </div>
+    </>
   );
 }

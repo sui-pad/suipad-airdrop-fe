@@ -3,6 +3,8 @@ import useSWRMutation from "swr/mutation";
 
 import { UrlType } from "@/components/Social";
 import { showTips } from "@/components/Popover";
+
+import { ChainType } from "@/sections/Wallet";
 import { ConnectionState, useWalletStore } from "@/sections/Wallet/hooks";
 
 import request from "@/utils/request";
@@ -16,12 +18,14 @@ export interface UserInfoType {
 export interface AirdropInfoType {
   jobId: string;
   name: string;
+  chain: ChainType;
   description: string;
   startTime: number;
   endTime: number;
   claimStimeTime: number;
   coverImage: string;
   logo: string;
+  chainLogo: string;
   illustration: string;
   totalReward: string;
   rewardTokenLogo: string;
@@ -37,13 +41,13 @@ export type ProgressType = 0 | 1 | 2;
 export interface TaskType {
   taskId: number;
   taskType:
-    | "check"
-    | "connect_twitter"
-    | "follow_twitter"
-    | "share_twitter"
-    | "join_tg_group"
-    | "join_dc_group"
-    | "like_comment_twitter";
+  | "check"
+  | "connect_twitter"
+  | "follow_twitter"
+  | "share_twitter"
+  | "join_tg_group"
+  | "join_dc_group"
+  | "like_comment_twitter";
   step: number;
   content: string;
   action: string;

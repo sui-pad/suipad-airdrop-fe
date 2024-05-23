@@ -1,26 +1,14 @@
-import Image from "next/image";
 import { Suspense } from "react";
+
 import { Dialog } from "@/components/Popover";
 
-import Evm, { EvmConnection } from "./Evm";
+import Option from "./Option";
+import Evm from "./Evm";
+import Sui from "./Sui";
+import { ChainType } from "./index";
 import { useWalletDialogStore } from "./hooks";
 
-function Option(props: EvmConnection) {
-  const { name, icon, connect } = props;
-
-  return (
-    <div
-      className="flex cursor-pointer items-center gap-x-2 rounded-md border border-[#4EC3C9] p-2 transition-colors hover:bg-[#4EC3C9]/20"
-      onClick={connect}
-    >
-      <Image className="w-8" src={icon} alt={name} />
-
-      {name}
-    </div>
-  );
-}
-
-export default function WalletDialog() {
+export default function WalletDialog({ chain }: { chain: ChainType }) {
   const { isOpen, closeDialog } = useWalletDialogStore();
 
   return (
@@ -28,7 +16,8 @@ export default function WalletDialog() {
       <Suspense>
         <div className="w-[85vw] md:mx-auto md:w-[360px]">
           <div className="mx-auto grid gap-3">
-            <Evm renderOption={Option} />
+            {chain === "bsc" && <Evm renderOption={Option} />}
+            {chain === "sui" && <Sui renderOption={Option} />}
           </div>
         </div>
       </Suspense>
