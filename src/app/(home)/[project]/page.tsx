@@ -74,9 +74,16 @@ function ProjectInfo(props: AirdropInfoType) {
           </p>
         </div>
 
-        <div className="mt-8 md:mt-[60px] md:w-[450px]">
+        <div className="mt-8 md:mt-[60px]">
           <h3 className="font-bold md:text-xl">Description</h3>
-          <p className="mt-1 text-sm md:mt-3 md:text-xl">{description}</p>
+          <div className="mt-1 text-sm md:mt-3 md:text-base" dangerouslySetInnerHTML={{ __html: description }}>
+            {/* <p className="mb-4">Complete all the tasks to snag a share of the 200,000 $SUIP Reward Pool.</p>
+            <p className="mb-2">🎁 Win 600 $SUIP per draw.</p>
+            <p>🍀 Lucky Draw Qualifications:</p>
+            <p>1. Complete all tasks to get a lucky draw chance.</p>
+            <p className="mb-4">2. Every time you invite 10 friends, get an extra lucky draw opportunity!</p>
+            <p>* There's no upper limit on the number of draws until all the prizes are won!</p> */}
+          </div>
         </div>
       </div>
       <div className="flex flex-col gap-4 md:flex-row md:gap-8">
@@ -119,7 +126,7 @@ function ProjectTask({ jobId, taskList, airdropInfo, userInfo, progress }: Proje
 
       <div className="grid gap-y-7">
         <div className="flex flex-col gap-3 md:flex-row md:items-center">
-          <p className="flex-1 text-xs md:text-base">
+          <p className="flex-1 text-xs md:text-[15px]">
             Invite more people and get more lottery chances. <br />
             Copy your exclusive invitation link.
           </p>
@@ -161,7 +168,7 @@ function ProjectTask({ jobId, taskList, airdropInfo, userInfo, progress }: Proje
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <p className="flex-1 text-xs md:text-base">Your current number of invited friends is</p>
+          <p className="flex-1 text-xs md:text-[15px]">Your current number of invited friends is</p>
 
           <div className="md:w-[200px]">
             <span className="flex h-8 w-20 items-center justify-center rounded-full bg-[#F0F0F0]">
@@ -237,13 +244,18 @@ function ProjectReward({ jobId, airdropInfo, userInfo }: ProjectRewardType) {
         <div>
           <RewardLabel label="Total Amount of Airdrop" />
           <RewardItem value={airdropInfo.totalReward} action={token} />
-          <p className="mt-1 text-xs md:mt-2 md:text-base">
+          <p className="mt-1 text-xs text-gray-500 md:mt-2 md:text-sm">
             Rewards will be distributed after the event time is over.
           </p>
         </div>
         <div>
           <RewardLabel label="Earn Draw Chances" />
           <RewardItem value={userInfo ? Math.floor(userInfo.inviteCount / 10) + 1 : "-"} />
+          <p className="mt-1 text-xs text-gray-500 md:mt-2 md:text-sm">
+            Complete the display task, and you will receive one raffle entry. <br />
+            Additionally, you can invite friends to participate in the task to earn extra raffle
+            entries.
+          </p>
         </div>
         <div>
           <RewardLabel label="Earn rewards" />

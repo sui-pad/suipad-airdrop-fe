@@ -229,7 +229,7 @@ export default function Task(props: TaskType) {
         {step}
       </span>
 
-      <p className="mx-1 flex-1 text-xs md:mx-3 md:text-base">{content}</p>
+      <p className="mx-1 flex-1 text-xs md:mx-3 md:text-[15px]">{content}</p>
 
       <Button
         className={cx(
