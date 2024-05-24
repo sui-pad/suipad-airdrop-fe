@@ -76,14 +76,16 @@ function ProjectInfo(props: AirdropInfoType) {
 
         <div className="mt-8 md:mt-[60px]">
           <h3 className="font-bold md:text-xl">Description</h3>
-          <div className="mt-1 text-sm md:mt-3 md:text-base" dangerouslySetInnerHTML={{ __html: description }}>
-            {/* <p className="mb-4">Complete all the tasks to snag a share of the 200,000 $SUIP Reward Pool.</p>
-            <p className="mb-2">🎁 Win 600 $SUIP per draw.</p>
+          <div
+            className="mt-1 text-sm md:mt-3 md:text-base"
+            dangerouslySetInnerHTML={{ __html: description }}
+          />
+          {/* <p class="mb-4">Complete all the tasks to snag a share of the 200,000 $SUIP Reward Pool.</p>
+            <p class="mb-2">🎁 Win 600 $SUIP per draw.</p>
             <p>🍀 Lucky Draw Qualifications:</p>
             <p>1. Complete all tasks to get a lucky draw chance.</p>
-            <p className="mb-4">2. Every time you invite 10 friends, get an extra lucky draw opportunity!</p>
+            <p class="mb-4">2. Every time you invite 10 friends, get an extra lucky draw opportunity!</p>
             <p>* There's no upper limit on the number of draws until all the prizes are won!</p> */}
-          </div>
         </div>
       </div>
       <div className="flex flex-col gap-4 md:flex-row md:gap-8">
