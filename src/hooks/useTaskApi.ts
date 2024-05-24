@@ -16,10 +16,11 @@ export interface UserInfoType {
 }
 
 export interface AirdropInfoType {
+  chain: ChainType;
   jobId: string;
   name: string;
-  chain: ChainType;
   description: string;
+  introduction: string;
   startTime: number;
   endTime: number;
   claimStimeTime: number;

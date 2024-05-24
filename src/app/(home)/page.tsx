@@ -86,7 +86,7 @@ function AirdropSkeleton() {
 
 function AirdropBox(props: AirdropInfoType) {
   const router = useRouter();
-  const { jobId, state, coverImage, logo, chainLogo, name, description, tags } = props;
+  const { jobId, state, coverImage, logo, chainLogo, name, introduction, tags } = props;
 
   return (
     <div className="h-96 overflow-hidden rounded-xl border border-[#DCDADA] shadow-[0px_5px_16px_0px_rgba(0,0,0,0.08)] md:h-[420px]">
@@ -113,7 +113,7 @@ function AirdropBox(props: AirdropInfoType) {
         </div>
 
         <h2 className="mt-7 text-xl font-bold leading-none md:text-[26px]">{name}</h2>
-        <p className="mt-4 h-12 text-[15px] text-[#5F5F5F] md:text-base">{description}</p>
+        <p className="mt-4 h-12 text-[15px] text-[#5F5F5F] md:text-base">{introduction}</p>
 
         <Button
           className="mx-auto mt-8 h-8 w-64 font-bold md:h-10 md:text-2xl"
