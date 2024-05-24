@@ -226,9 +226,10 @@ interface ProjectRewardType {
   jobId: string;
   airdropInfo: AirdropInfoType;
   userInfo?: UserInfoType;
+  drawChances?: number;
 }
 
-function ProjectReward({ jobId, airdropInfo, userInfo }: ProjectRewardType) {
+function ProjectReward({ jobId, airdropInfo, userInfo, drawChances }: ProjectRewardType) {
   const { data } = useRewardInfo(jobId);
 
   const token = (
@@ -252,7 +253,7 @@ function ProjectReward({ jobId, airdropInfo, userInfo }: ProjectRewardType) {
         </div>
         <div>
           <RewardLabel label="Earn Draw Chances" />
-          <RewardItem value={userInfo ? Math.floor(userInfo.inviteCount / 10) + 1 : "-"} />
+          <RewardItem value={drawChances ?? "-"} />
           <p className="mt-1 text-xs text-gray-500 md:mt-2 md:text-sm">
             Complete the display task, and you will receive one raffle entry. <br />
             Additionally, you can invite friends to participate in the task to earn extra raffle
@@ -303,7 +304,7 @@ function ProjectBox() {
   const { data: userInfo } = useUserInfo(param.project);
   const { data: taskinfo } = useTaskInfo(param.project);
 
-  const { progress } = taskinfo ?? {};
+  const { progress, drawChances } = taskinfo ?? {};
 
   if (!param.project) return <></>;
 
@@ -331,7 +332,7 @@ function ProjectBox() {
 
                 <Divider className="my-5 md:mx-10" direction={isMobile ? "row" : "column"} />
 
-                <ProjectReward jobId={param.project} airdropInfo={data} userInfo={userInfo} />
+                <ProjectReward jobId={param.project} airdropInfo={data} userInfo={userInfo} drawChances={drawChances} />
               </div>
             )}
           </div>

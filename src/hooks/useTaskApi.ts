@@ -129,7 +129,7 @@ export function useTaskList(jobId: string) {
 export function useTaskInfo(jobId: string) {
   const { connectionState } = useWalletStore();
 
-  return useSWR<{ points: number; progress: ProgressType[] }>([
+  return useSWR<{ points: number; drawChances: number, progress: ProgressType[] }>([
     "/task/task_info",
     { body: { jobId } },
     [connectionState === ConnectionState.CONNECTED],

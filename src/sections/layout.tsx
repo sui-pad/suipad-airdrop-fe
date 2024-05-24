@@ -4,7 +4,7 @@ import { SWRConfig } from "swr";
 
 import Background from "@/sections/Background";
 
-import EvnProvider from "@/context/eth";
+import EvmProvider from "@/context/eth";
 import SuiProvider from "@/context/sui";
 
 import request, { OptionsType } from "@/utils/request";
@@ -24,11 +24,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       revalidateOnFocus: false,
     }}
   >
-    <EvnProvider>
+    <EvmProvider>
       <SuiProvider>
         <Background />
         {children}
       </SuiProvider>
-    </EvnProvider>
+    </EvmProvider>
   </SWRConfig>
 }
