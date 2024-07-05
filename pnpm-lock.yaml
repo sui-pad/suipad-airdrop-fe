@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@ethersproject/units':
+        specifier: ^5.7.0
+        version: 5.7.0
       '@metamask/detect-provider':
         specifier: ^2.0.0
         version: 2.0.0
@@ -183,6 +186,9 @@ packages:
 
   '@ethersproject/transactions@5.7.0':
     resolution: {integrity: sha512-kmcNicCp1lp8qanMTC3RIikGgoJ80ztTyvtsFvCYpSCfkjhD0jZ2LOrnbcuxuToLIUYYf+4XwD1rP+B/erDIhQ==}
+
+  '@ethersproject/units@5.7.0':
+    resolution: {integrity: sha512-pD3xLMy3SJu9kG5xDGI7+xhTEmGXlEqXU4OfNapmfnxLVY4EMSSRp7j1k7eezutBPH7RBN/7QPnwR7hzNlEFeg==}
 
   '@ethersproject/web@5.7.1':
     resolution: {integrity: sha512-Gueu8lSvyjBWL4cYsWsjh6MtMwM0+H4HvqFPZfB6dV8ctbP9zFAO73VG1cMWae0FLPCtz0peKPpZY8/ugJJX2w==}
@@ -2396,7 +2402,6 @@ snapshots:
   '@ethersproject/constants@5.7.0':
     dependencies:
       '@ethersproject/bignumber': 5.7.0
-    optional: true
 
   '@ethersproject/hash@5.7.0':
     dependencies:
@@ -2502,6 +2507,12 @@ snapshots:
       '@ethersproject/rlp': 5.7.0
       '@ethersproject/signing-key': 5.7.0
     optional: true
+
+  '@ethersproject/units@5.7.0':
+    dependencies:
+      '@ethersproject/bignumber': 5.7.0
+      '@ethersproject/constants': 5.7.0
+      '@ethersproject/logger': 5.7.0
 
   '@ethersproject/web@5.7.1':
     dependencies:

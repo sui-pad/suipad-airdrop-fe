@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import { useRouter, useParams } from "next/navigation";
-import { Suspense } from "react";
+import { Suspense, useState, useEffect } from "react";
+
 import { cx } from "cva";
 import { twMerge } from "tailwind-merge";
 
@@ -11,13 +12,14 @@ import Tag from "@/components/Tag";
 import Social from "@/components/Social";
 import Button from "@/components/Button";
 import Clipboard from "@/components/Clipboard";
-import { showSucc } from "@/components/Popover";
+import { showError, showSucc } from "@/components/Popover";
 import Skeleton from "@/components/Skeleton";
 
 import Header from "@/sections/Header";
 import Wallet from "@/sections/Wallet";
 import { TaskList } from "@/sections/Task";
 
+import useDevice from "@/hooks/useDevice";
 import {
   ProgressType,
   AirdropInfoType,
@@ -36,7 +38,8 @@ import { formatNumber } from "@/utils/formatNumber";
 
 import ImgBack from "@/app/assets/back.png";
 import ImgCalendar from "@/app/assets/calendar.png";
-import useDevice from "@/hooks/useDevice";
+
+import { useClaimState, useClaimReward } from "./hooks";
 
 function ProjectSkeleton() {
   return (
@@ -229,8 +232,32 @@ interface ProjectRewardType {
   drawChances?: number;
 }
 
-function ProjectReward({ jobId, airdropInfo, userInfo, drawChances }: ProjectRewardType) {
+function ProjectReward({ jobId, airdropInfo, drawChances }: ProjectRewardType) {
+  const [claimed, setClaimed] = useState<string>();
+
+  const getClaimState = useClaimState();
+  const claim = useClaimReward();
   const { data } = useRewardInfo(jobId);
+
+  const handleClaimState = async () => {
+    const state = await getClaimState();
+    setClaimed(state);
+  };
+
+  const handleClaim = async () => {
+    const res = await claim();
+    console.log(res);
+
+    if (res) {
+      showSucc("Claim successful");
+    } else {
+      showError("Claim failed");
+    }
+  };
+
+  useEffect(() => {
+    handleClaimState();
+  }, [data]);
 
   const token = (
     <div className="flex items-center gap-1">
@@ -284,9 +311,20 @@ function ProjectReward({ jobId, airdropInfo, userInfo, drawChances }: ProjectRew
         <Button
           className="h-11 rounded-xl text-xl font-bold md:h-[70px] md:rounded-[20px] md:text-3xl"
           colors="active"
-          disabled={Date.now() - airdropInfo.claimStimeTime < 0}
+          disabled={
+            Date.now() - airdropInfo.claimStimeTime < 0 ||
+            Number(data?.balance) === Number(claimed) ||
+            Boolean(Number(data?.balance))
+          }
+          onClick={handleClaim}
         >
-          Claim
+          {data
+            ? Date.now() - airdropInfo.claimStimeTime > 0 && !Number(data.balance)
+              ? "Non winner"
+              : Number(data.balance) === Number(claimed)
+                ? "Claimed"
+                : "Claim"
+            : "Claim"}
         </Button>
       </div>
     </div>
@@ -332,7 +370,12 @@ function ProjectBox() {
 
                 <Divider className="my-5 md:mx-10" direction={isMobile ? "row" : "column"} />
 
-                <ProjectReward jobId={param.project} airdropInfo={data} userInfo={userInfo} drawChances={drawChances} />
+                <ProjectReward
+                  jobId={param.project}
+                  airdropInfo={data}
+                  userInfo={userInfo}
+                  drawChances={drawChances}
+                />
               </div>
             )}
           </div>

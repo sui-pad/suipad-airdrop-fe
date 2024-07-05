@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ethersproject/units": "^5.7.0",
     "@metamask/detect-provider": "^2.0.0",
     "@mysten/dapp-kit": "^0.13.2",
     "@mysten/sui.js": "^0.54.1",
