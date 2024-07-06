@@ -30,7 +30,7 @@ export function useClaimReward() {
     return new Promise((resolve, reject) => {
       const txBlock = new TransactionBlock();
 
-      txBlock.setGasBudget(1e9);
+      // txBlock.setGasBudget(1e9);
       txBlock.moveCall({
         target: `${CLAIM_PACKAGE}::airdrop::claim_entry`,
         typeArguments: [SUIP_TYPE],
