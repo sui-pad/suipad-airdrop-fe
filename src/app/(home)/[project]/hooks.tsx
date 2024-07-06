@@ -8,10 +8,10 @@ import { bcs } from "@mysten/sui.js/bcs";
 import { TransactionBlock } from "@mysten/sui.js/transactions";
 import { formatUnits } from "@ethersproject/units";
 
-const POOL_PACKAGE = "0x93a88d45322a6657330210e3b6d0e90a0219f6ce0a008a45a96aea6a2a06d43b";
-const CLAIM_PACKAGE = "0x7c70733471e08a0582ca64ed4f602e4154abdf46ea14b0fb128ab1706d499bfe";
+const POOL_PACKAGE = "0x16e84651a100bb467911bb9c447a541fe067ec0aefa7358b6c2e962dfc6bf177";
+const CLAIM_PACKAGE = "0x7984fa3914cc238288741c8995a8b772d6923366f718258cb27bff1d0b8ccd3a";
 
-const SSBT_TYPE = "0x438f52246972c0868fd3cc01034f77e34ff90082b1cebdb0549e0a1031f9f62e::ssbt::SSBT";
+const SUIP_TYPE = "0xe4239cd951f6c53d9c41e25270d80d31f925ad1655e5ba5b543843d4a66975ee::SUIP::SUIP";
 
 export interface ClainStateType {
   totalReward: string;
@@ -33,7 +33,7 @@ export function useClaimReward() {
       txBlock.setGasBudget(1e9);
       txBlock.moveCall({
         target: `${CLAIM_PACKAGE}::airdrop::claim_entry`,
-        typeArguments: [SSBT_TYPE],
+        typeArguments: [SUIP_TYPE],
         arguments: [txBlock.object(POOL_PACKAGE)],
       });
 
@@ -64,10 +64,10 @@ export function useClaimState() {
 
     const txBlock = new TransactionBlock();
 
-    txBlock.setGasBudget(1e9);
+    // txBlock.setGasBudget(1e9);
     txBlock.moveCall({
       target: `${CLAIM_PACKAGE}::airdrop::claim`,
-      typeArguments: [SSBT_TYPE],
+      typeArguments: [SUIP_TYPE],
       arguments: [txBlock.object(POOL_PACKAGE)],
     });
 
@@ -77,7 +77,6 @@ export function useClaimState() {
     });
 
     if (res.results) {
-      console.log(res.results);
       const [_, claimd] = (res.results?.[0].returnValues ?? []).map(([value, type]) =>
         formatUnits(bcs.de(type, Uint8Array.from(value)), 9),
       );

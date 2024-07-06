@@ -246,9 +246,9 @@ function ProjectReward({ jobId, airdropInfo, drawChances }: ProjectRewardType) {
 
   const handleClaim = async () => {
     const res = await claim();
-    console.log(res);
 
     if (res) {
+      handleClaimState();
       showSucc("Claim successful");
     } else {
       showError("Claim failed");
@@ -314,7 +314,7 @@ function ProjectReward({ jobId, airdropInfo, drawChances }: ProjectRewardType) {
           disabled={
             Date.now() - airdropInfo.claimStimeTime < 0 ||
             Number(data?.balance) === Number(claimed) ||
-            Boolean(Number(data?.balance))
+            !Number(data?.balance)
           }
           onClick={handleClaim}
         >
