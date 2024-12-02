@@ -44,9 +44,9 @@ export function fullNumber(value?: string | number, exact?: boolean) {
 	const powerNum = Number(power);
 
 	if (powerNum > 0) {
-		return `${integer}${decimal ?? ""}${"0".repeat(Math.abs(powerNum) - decimal?.length ?? 0)}`;
+		return `${integer}${decimal}${"0".repeat(Math.abs(powerNum) - decimal.length)}`;
 	} else {
-		return `0.${"0".repeat(Math.abs(powerNum) - integer?.length ?? 0)}${integer}${decimal ?? ""}`;
+		return `0.${"0".repeat(Math.abs(powerNum) - integer.length)}${integer}${decimal ?? ""}`;
 	}
 }
 
