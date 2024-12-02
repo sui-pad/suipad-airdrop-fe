@@ -8,10 +8,10 @@ import { bcs } from "@mysten/sui.js/bcs";
 import { TransactionBlock } from "@mysten/sui.js/transactions";
 import { formatUnits } from "@ethersproject/units";
 
-const POOL_PACKAGE = "0x16e84651a100bb467911bb9c447a541fe067ec0aefa7358b6c2e962dfc6bf177";
-const CLAIM_PACKAGE = "0x7984fa3914cc238288741c8995a8b772d6923366f718258cb27bff1d0b8ccd3a";
+const POOL_PACKAGE = "0xb8ce95d0b6a53350396b2f4fc92f8bbfe3c095778b050d34836a65503aa66c42";
+const CLAIM_PACKAGE = "0xbca50b4abc7b1ecf60a17cec682ac042b0f1c64d8bdb24f8b317c3af2361b939";
 
-const SUIP_TYPE = "0xe4239cd951f6c53d9c41e25270d80d31f925ad1655e5ba5b543843d4a66975ee::SUIP::SUIP";
+const SUIP_TYPE = "0x072df455e324af1cd28041ba790a0feed408dc019e594341a79a4c3594d3bfbc::SUIP::SUIP";
 
 export interface ClainStateType {
   totalReward: string;
@@ -32,9 +32,11 @@ export function useClaimReward() {
 
       // txBlock.setGasBudget(1e9);
       txBlock.moveCall({
-        target: `${CLAIM_PACKAGE}::airdrop::claim_entry`,
+        target: `${CLAIM_PACKAGE}::claim::claim`,
         typeArguments: [SUIP_TYPE],
-        arguments: [txBlock.object(POOL_PACKAGE)],
+        arguments: [txBlock.object(POOL_PACKAGE),
+          txBlock.object('0x6'),
+        ],
       });
 
       signAndExecuteTransactionBlock(
@@ -46,7 +48,7 @@ export function useClaimReward() {
           onSuccess: () => {
             resolve(true);
           },
-          onError: () => {
+          onError: (e) => {
             reject(false);
           },
         },
@@ -66,7 +68,7 @@ export function useClaimState() {
 
     // txBlock.setGasBudget(1e9);
     txBlock.moveCall({
-      target: `${CLAIM_PACKAGE}::airdrop::claim`,
+      target: `${CLAIM_PACKAGE}::claim::claimed_amount`,  // 未领取数量
       typeArguments: [SUIP_TYPE],
       arguments: [txBlock.object(POOL_PACKAGE)],
     });
@@ -77,7 +79,7 @@ export function useClaimState() {
     });
 
     if (res.results) {
-      const [_, claimd] = (res.results?.[0].returnValues ?? []).map(([value, type]) =>
+      const [claimd] = (res.results?.[0].returnValues ?? []).map(([value, type]) =>
         formatUnits(bcs.de(type, Uint8Array.from(value)), 9),
       );
 
